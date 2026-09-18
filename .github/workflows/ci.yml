@@ -36,7 +36,7 @@ jobs:
         working-directory: verifier
       # The personal layer needs the owner's Episteme code, which is not in this repo. Its tests then
       # skip and SAY so (-rs prints the reason); they are run locally. Nothing here pretends they ran.
-      - run: python -m pytest -q -rs
+      - run: python -m pytest -q -rs || { [ $? -eq 5 ] && echo "::notice::personal/ tests were SKIPPED here (no Episteme checkout in CI); they run on the owner's machine"; }
         working-directory: personal
 
   live:
