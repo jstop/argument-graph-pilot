@@ -2,13 +2,10 @@
 
 Operator setup from zero, day-to-day, member revocation, and the key-loss
 drills. Each drill below says **what was actually done, on what, and what
-happened**, including the one that failed the first time. Everything here
-was run in **local mode** on macOS/Docker Desktop (arm64) on 2026-09-18
-with Signify clients standing in for phones. **Cloud mode and real phones
-have not been run for this repo**; §2–§5 of demo2's RUNBOOK (DNS records,
-Let's Encrypt, the AWS box, onboarding QR, "Misconfigured cloud agent"
-repair) were exercised for demo2 with the same `stack.sh` and are carried
-over unchanged, not re-run.
+happened**, including the one that failed the first time. The drills
+were run in **local mode** on macOS/Docker Desktop (arm64) on 2026-09-18
+with Signify clients standing in for phones. **Cloud mode** was deployed
+the same day (§1a). **No real phone has been run for this repo.**
 
 Two modes, as in demo2. **Local**: one machine, plain HTTP; phones cannot
 use it. **Cloud**: same containers behind Veridian's traefik file on a
@@ -70,6 +67,40 @@ OPERATOR_TOKEN=… npx tsx spike/12-drive-services.ts     # A claims, B attacks,
 cd verifier && python -m arglog_verifier ../export.json --issuer <issuer AID>
 ```
 Done on 2026-09-18: verifier exit 0, same authors, `1/4`.
+
+## 1a. Cloud mode, as deployed on 2026-09-18
+
+On demo2's existing box (AWS t3.large, Ubuntu 24.04, Docker 29,
+`pilot.joshautomates.com`; demo2 RUNBOOK §9 for how it was made), whose
+witnesses, KERIA and traefik were already running from demo2's identical
+`stack.sh`; `stack.sh` was **not** re-run from this repo there. Steps:
+
+1. rsync this repo to `~/arglog` (no secrets, no `infra/veridian`: the
+   stack keeps running from `~/pilot`).
+2. `infra/services.env` written on the box from the example with the
+   five cloud URLs and a generated `OPERATOR_TOKEN`.
+3. demo2's two service containers were **stopped** (`docker compose …
+   stop` in `~/pilot`; containers, volumes, keys and its published claims
+   are kept; `./infra/services.sh up` there brings them back, but both
+   pilots claim `issuer.`, `claims.` and `keria-boot…/connect`, so only
+   one can be up).
+4. `./infra/services.sh up` in `~/arglog`.
+
+Checked from a laptop over the internet: `https://claims.<domain>/healthz`
+ok with the genesis record; `https://issuer.<domain>/` answers 401 without
+the token; `https://keria-boot.<domain>/connect` answers with the connect
+URL; the schema is served; ports 3110/3120 are closed from outside. Then
+`PILOT_DOMAIN=… OPERATOR_TOKEN=… npx tsx spike/12-drive-services.ts`
+(stand-in phones, through the public KERIA): 0.5000 → 0.2500, and the
+downloaded export verified on the laptop, exit 0, `1/4`. Those two
+stand-in members ("Ana", "Bo") and their two entries are now permanently
+in the deployed log; `./infra/services.sh wipe` then `up` starts a clean
+one under a **new** issuer identifier.
+
+Seen on the box: `docker compose build` of both services at once fails
+with `image "arglog-pilot:local": already exists` (no buildx on Ubuntu's
+docker.io); the image is built anyway and `services.sh up`, which builds
+one service at a time, is unaffected.
 
 ## 2. Day-to-day
 
@@ -216,7 +247,7 @@ JSON on non-ASCII; traefik default certificate on Docker 29). New:
 
 ## 6. Not done
 
-- Cloud deployment and any real phone, for this repo.
+- Any real phone, for this repo.
 - A phone-side recovery drill (§4.3); a cross-host restore (§4.2).
 - Backups beyond "copy two passcode files, `secrets.env`, the volumes".
 - Monitoring; scheduled checkpoints.

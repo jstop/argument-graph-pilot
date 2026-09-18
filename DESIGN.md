@@ -299,8 +299,8 @@ de-anchoring.
 - **No real phone has run any of this.** Everything "tested" above used
   `wallet-standin.ts`, a Signify client that copies the wallet's calls.
   TESTER.md is unexecuted. The success criterion is met with stand-ins
-  against local containers only. Cloud mode was not deployed for this
-  repo.
+  against local containers and against the cloud deployment (RUNBOOK
+  §1a).
 - Wallet recovery from a phrase: drilled only in stand-in form.
 - Issuer restore: drilled onto a fresh data volume against the **same**
   KERIA volume on the same machine, not onto another host.

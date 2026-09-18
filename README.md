@@ -30,8 +30,9 @@ still apply.
   gate check, revocation, key rotation, and the independent verifier
   reproducing every author and number from the export alone, including
   against the deployed containers.
-- **Not done: no real phone has run this**, and cloud mode was not
-  deployed for this repo. TESTER.md is unexecuted. Non-ASCII text is
+- Cloud mode is deployed (RUNBOOK §1a) and passes the same check over
+  the internet with stand-in phones. **Not done: no real phone has run
+  this.** TESTER.md is unexecuted. Non-ASCII text is
   tested end to end with stand-ins, not from a phone. The wallet shows
   only the first line of a long text on its signing screen (read from
   its source; DESIGN.md).
