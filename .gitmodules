@@ -1,0 +1,3 @@
+[submodule "infra/veridian"]
+	path = infra/veridian
+	url = https://github.com/cardano-foundation/veridian-wallet.git

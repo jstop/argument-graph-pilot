@@ -1,0 +1,14 @@
+# Merged on top of Veridian's compose file. Pins the images whose tags
+# Veridian hardcodes (no env override available upstream).
+name: veridian-prod
+
+services:
+  witness-init:
+    image: ghcr.io/veridian-id/veridian-wallet/witness@sha256:871ee386b51bcbc0fcb57687d109b9dee6372c059585076db0620f48613f4ca5
+  keria-init:
+    image: rcmorano/alpine-bash-jq-curl@sha256:0d5edb7fd12dcccb082e8a878c7ebbe1d4a789ccc5af88d950513816b2afa3e3
+  # Veridian pins traefik v3.3.5, whose docker provider speaks API 1.24;
+  # Docker 29 (Ubuntu 24.04) refuses anything below 1.44, so traefik finds
+  # no containers and serves its default certificate. Current traefik:
+  traefik:
+    image: traefik@sha256:5ef057b31119f028743e8c1554b562e87f0b8acabfc767b70e82d762bc809dce
