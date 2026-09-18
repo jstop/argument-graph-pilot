@@ -1,0 +1,72 @@
+# The issuer and the relying party (the log), on the same docker network
+# as Veridian's stack so they reach KERIA by its service name and KERIA
+# can fetch the schema from them by THEIR service names.
+#
+#   MODE=local: ports published on this machine, plain HTTP.
+#   MODE=cloud: traefik routes https://issuer.$PUBLIC_DOMAIN and
+#               https://$RP_SUBDOMAIN.$PUBLIC_DOMAIN (labels below).
+# Project name and ports differ from demo2's so both can run on one box.
+# Service names are prefixed: they are DNS names on the shared network, and
+# demo2's "issuer"/"relying-party" containers may be on it too (seen: KERIA
+# resolved "relying-party" to demo2's container and our schema OOBI timed out).
+name: arglog
+
+x-service: &service
+  build: { context: .., dockerfile: Dockerfile }
+  image: arglog-pilot:local
+  restart: unless-stopped
+  env_file: services.env
+  networks: [veridian]
+  logging: { driver: json-file, options: { max-size: "1024k", max-file: "20" } }
+
+services:
+  arglog-issuer:
+    <<: *service
+    command: npx tsx issuer/src/main.ts
+    environment:
+      KERIA_URL: http://keria:3901
+      KERIA_BOOT_URL: http://keria:3903
+      ISSUER_PORT: "3110"
+      ISSUER_DATA_DIR: /data
+      LOG_URL: http://arglog-log:3120
+    volumes: [issuer-data:/data]
+    ports: ["3110:3110"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arglog-issuer.rule=Host(`issuer.${PUBLIC_DOMAIN:-example.com}`)"
+      - "traefik.http.routers.arglog-issuer.entrypoints=websecure"
+      - "traefik.http.routers.arglog-issuer.tls.certresolver=myresolver"
+      - "traefik.http.services.arglog-issuer.loadbalancer.server.port=3110"
+      # The wallet's onboarding fetch: keria-boot.<domain>/connect -> issuer's /connect
+      - "traefik.http.routers.arglog-connect.rule=Host(`keria-boot.${PUBLIC_DOMAIN:-example.com}`) && Path(`/connect`)"
+      - "traefik.http.routers.arglog-connect.priority=1000"
+      - "traefik.http.routers.arglog-connect.entrypoints=websecure"
+      - "traefik.http.routers.arglog-connect.tls.certresolver=myresolver"
+      - "traefik.http.routers.arglog-connect.service=arglog-issuer"
+
+  arglog-log:
+    <<: *service
+    command: npx tsx relying-party/src/main.ts
+    environment:
+      KERIA_URL: http://keria:3901
+      KERIA_BOOT_URL: http://keria:3903
+      RP_PORT: "3120"
+      RP_DATA_DIR: /data
+      ISSUER_URL: http://arglog-issuer:3110
+    volumes: [rp-data:/data]
+    ports: ["3120:3120"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arglog-log.rule=Host(`${RP_SUBDOMAIN:-claims}.${PUBLIC_DOMAIN:-example.com}`)"
+      - "traefik.http.routers.arglog-log.entrypoints=websecure"
+      - "traefik.http.routers.arglog-log.tls.certresolver=myresolver"
+      - "traefik.http.services.arglog-log.loadbalancer.server.port=3120"
+
+networks:
+  veridian:
+    name: veridian-prod_default
+    external: true
+
+volumes:
+  issuer-data:
+  rp-data:

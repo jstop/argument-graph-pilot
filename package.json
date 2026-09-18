@@ -1,5 +1,5 @@
 {
-  "name": "credential-pilot",
+  "name": "argument-graph-pilot",
   "private": true,
   "license": "Apache-2.0",
   "workspaces": [
@@ -17,7 +17,9 @@
   "devDependencies": {
     "@types/node": "^20.19.43",
     "@types/qrcode": "^1.5.6",
-    "tsx": "^4.23.13",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "tsx": "^4.23.13"
   }
 }
