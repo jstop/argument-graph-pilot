@@ -1,0 +1,14 @@
+{
+  "name": "@pilot/issuer",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@pilot/common": "*",
+    "qrcode": "^1.5.4"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "test": "node --import tsx --test --test-concurrency=1 test/*.test.ts"
+  }
+}
