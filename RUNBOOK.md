@@ -138,32 +138,40 @@ both tried and **refused for a private repository on this plan** (HTTP
 stops a direct push to main; CI still runs on it, and nothing reaches
 the box without the owner starting a deploy.
 
-**What GitHub holds, and what it can do with it.** One secret,
-`DEPLOY_SSH_KEY` (environment `production`), plus the box's address and
-its **pinned** SSH host key as variables. On the box that key is bound
-to a forced command, `~/arglog-deploy-gate.sh` (source:
-`ops/box/deploy-gate.sh`, deliberately outside the checkout so a commit
-cannot rewrite the gate it passes through). Tested: with that key, `cat
-services.env` → refused; an unknown commit id → `not on origin/main;
-refusing`; port forwarding → `administratively prohibited`. The only
-thing it can do is ask the box to deploy a commit that is already on
-`origin/main`. The box fetches the code itself with its **own
-read-only** deploy key (generated on the box; the private half never
-left it; a push with it is refused). The operator's
-`credential-pilot.pem` is not in GitHub.
+**GitHub holds no credential for the box.** The first design gave
+Actions an SSH key restricted to one forced command; its first run
+failed with `connect to host … port 22: Connection timed out`, because
+the box's firewall allows SSH only from the operator's address (demo2
+RUNBOOK §9). Rather than open SSH to GitHub's address ranges, the
+direction was reversed; the key, the secret and the `authorized_keys`
+line were removed.
+
+- The deploy workflow, after checking CI, only **moves the `production`
+  tag** to the commit (that is all its `contents: write` is for), then
+  waits until the public `/healthz` reports `"commit": "<that sha>"`
+  (15 minutes, then it fails and says to look at the box).
+- **The box pulls.** `~/arglog-deploy-poll.sh` (source:
+  `ops/box/deploy-poll.sh`; installed by hand, outside the checkout, so
+  a commit cannot rewrite what decides to deploy it) runs from cron
+  every minute. With the box's **own read-only** deploy key (made on the
+  box, never left it; a push with it is refused) it fetches `main` and
+  the tag; if the tag names a commit that is on `origin/main` and is
+  not what runs, it checks it out and runs `ops/deploy-remote.sh`. A
+  commit that failed is not retried until the tag moves. Log:
+  `~/arglog-deploy.log`; state: `~/.arglog-deploy/`.
+- Who can deploy, then: whoever can move a tag in the repository, i.e.
+  the owner and this one workflow. The same trust as `main` itself.
 
 **What a deploy does (`ops/deploy-remote.sh`, on the box):** tags the
 running image `:previous`, rebuilds, restarts both services, then
 requires: both healthy; the issuer is **the same identifier** as before;
 the log did **not shrink** and the previous head is still in it. Any
-failure → the previous image is put back and the run fails. It never
-touches volumes, `services.env`, KERIA or the witnesses.
+failure → the previous image is put back. It never touches volumes,
+`services.env`, KERIA or the witnesses.
 
-**Rotate the deploy key:** generate a new ed25519 key, replace the
-`github-actions deploy trigger` line in the box's
-`~/.ssh/authorized_keys` (keep the `command="…"` prefix), `gh secret set
-DEPLOY_SSH_KEY --env production < newkey`, delete the local copy.
-**Revoke CI's access entirely:** delete that one `authorized_keys` line.
+**Stop all automatic deploys:** `crontab -r` on the box (or delete the
+`production` tag). **Deploy by hand instead:** on the box, `cd ~/arglog
+&& git fetch && git checkout <sha> && ./ops/deploy-remote.sh`.
 
 **Not under this control:** the box itself (made by hand, demo2 RUNBOOK
 §9; no Terraform), DNS, the witnesses/KERIA stack (still started by

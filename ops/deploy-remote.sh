@@ -11,6 +11,7 @@ ENV=infra/services.env
 [ -f "$ENV" ] || { echo "deploy: $ENV is missing on this box (RUNBOOK §1); refusing" >&2; exit 2; }
 dc() { docker compose --env-file "$ENV" -f infra/compose.services.yaml "$@"; }
 IMAGE=arglog-pilot:local
+export DEPLOYED_COMMIT="${DEPLOYED_COMMIT:-$(git rev-parse HEAD)}"     # shown at /healthz so the outside can see what runs
 issuer_aid() { curl -sf -m 10 http://127.0.0.1:3110/healthz | jq -r '.issuer // empty'; }
 head_json()  { curl -sf -m 10 http://127.0.0.1:3120/log/head; }
 
@@ -43,7 +44,7 @@ if ! check; then
   dc logs --tail 40 >&2 || true
   if docker image inspect arglog-pilot:previous >/dev/null 2>&1; then
     docker tag arglog-pilot:previous "$IMAGE"
-    dc up -d --no-build --force-recreate arglog-issuer arglog-log
+    DEPLOYED_COMMIT="$(cat /home/ubuntu/.arglog-deploy/deployed 2>/dev/null || echo rolled-back)" dc up -d --no-build --force-recreate arglog-issuer arglog-log
     check && echo "deploy: rolled back; the previous version is serving" >&2 || echo "deploy: ROLLBACK DID NOT RECOVER; the box needs a person (RUNBOOK §5)" >&2
   fi
   exit 1
