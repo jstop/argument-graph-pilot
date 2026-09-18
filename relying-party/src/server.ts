@@ -76,7 +76,8 @@ export function buildServer(rp: RelyingParty): Server {
       if (kind !== "claim" && !rp.gate.log.some((r) => r.n > 0 && r.d === target)) return json(res, 400, { error: "no such entry to respond to" });
       const session = rp.createSession();
       intents.set(session.id, { kind, target: kind === "claim" ? undefined : target });
-      res.writeHead(303, { Location: `/s/${session.id}?kind=${kind}${kind === "claim" ? "" : `&target=${target}`}` });
+      const text = url.searchParams.get("text");
+      res.writeHead(303, { Location: `/s/${session.id}?kind=${kind}${kind === "claim" ? "" : `&target=${target}`}${text ? `&text=${encodeURIComponent(text)}` : ""}` });
       res.end();
       return;
     }
@@ -84,7 +85,9 @@ export function buildServer(rp: RelyingParty): Server {
     if (get && sp) {
       if (!rp.session(sp[1])) return json(res, 404, { error: "no such session" });
       const intent = intents.get(sp[1]) ?? { kind: url.searchParams.get("kind") ?? "claim", target: url.searchParams.get("target") ?? undefined };
-      return html(res, sessionPage(sp[1], intent.kind, intent.target ? rp.view().byId.get(intent.target) : undefined, rp.config.maxTextLength));
+      // ?text= prefills the box (the personal focus tool links here with a position to post). Nothing is sent until the member clicks.
+      const prefill = (url.searchParams.get("text") ?? "").slice(0, rp.config.maxTextLength);
+      return html(res, sessionPage(sp[1], intent.kind, intent.target ? rp.view().byId.get(intent.target) : undefined, rp.config.maxTextLength, prefill));
     }
     const api = /^\/api\/sessions\/([0-9a-f]{32})(\/entry)?$/.exec(path);
     if (api && get && !api[2]) {

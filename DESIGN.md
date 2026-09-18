@@ -206,6 +206,54 @@ recorded event cut to 3 of 4 required receipts is not accepted (tested).
 Without `--issuer` the report says the issuer was **not checked** (taken
 from genesis).
 
+### D10. A personal layer: attention, fed by your own library and the community — proposed; changes the brief's scope
+Added at the owner's request after the first phone run. The brief's
+non-goals say "no suggestion" and "no reputation". `personal/` **suggests
+what to look at**. It is confined to the owner's machine and adds nothing
+to the community stack: the services, the log format, the gate and the
+verifier are unchanged except that the posting page accepts `?text=` to
+prefill its box (nothing is sent until the member clicks and signs). No
+LLM is called; links between your ideas and community entries are made by
+hand. The owner should decide whether the non-goal stands as written.
+
+- **Reads a personal Episteme library** (`~/workspace/epistemic`)
+  strictly read-only: SQLite opened `mode=ro`, then Episteme's *own*
+  replay and stance code run on that connection, so its rules (stance
+  ladder, dependency cap, "unreviewed is capped at NOTE") are not
+  re-implemented. Episteme's own constructor is not used because it
+  writes on open. Tested on a read-only file; never writes there.
+- **Takes the community in only through the independent verifier.** A
+  pulled export is verified against an issuer identifier the owner
+  supplies; entries that fail exert no pressure (tested with a rewritten
+  attack). The site's own numbers are not used.
+- **Attention, not confidence.** `score = weight × Σ signals`. Weight is
+  structural (how many of your ideas rest on this one) adjusted by your
+  own "A over B" comparisons and halved per dismissal. Signals are named
+  and printed: a fresh community attack on something you hold (+3), a
+  compromised premise (+2.5), a divergence between your stance and the
+  community standing (+1.5…2), SUSPECT/CONTESTED/HYPOTHESIS in your own
+  library, heavy-and-never-examined, and an outward suggestion (a
+  position you stand behind, in a topic already argued there, that
+  nobody has claimed). An idea with no signal is not shown. One seat is
+  always kept for a community claim linked to nothing you hold. All the
+  point values are guesses to be tuned against use.
+- **A community strength is never converted into your confidence.** It
+  says how a claim stands among the members who showed up. It appears
+  only as pressure where it diverges from your stance.
+- **What it remembers** (links, comparisons, your responses, which
+  exports it pulled) is its own hash-chained JSONL under
+  `~/.local/share/arglog-focus`, rebuilt by replay; not in the repo, not
+  in Episteme.
+- **Privacy.** Your ideas are printed to your terminal or served on
+  127.0.0.1. The only thing that leaves is text you yourself post and
+  sign. `personal/` is not deployed to the cloud box.
+- **Not built:** maturity (exploring/developing/settled) as its own
+  axis, since Episteme has no such field (HYPOTHESIS is the nearest);
+  writing anything back into Episteme (e.g. a community entry as
+  evidence, a record that you published a belief); workbench argument
+  graphs as a source of weight; any automatic matching of ideas to
+  entries; tuning of weights from your responses beyond dismissal.
+
 ## Where Veridian's stack decided for us
 
 Everything in demo2's list still applies (six witnesses marked

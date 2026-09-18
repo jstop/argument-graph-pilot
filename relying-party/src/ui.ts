@@ -134,7 +134,7 @@ ${[...decisions].reverse().map((d) => `<div class="entry ${d.decision === "accep
   <ul class="chain">${d.checks.map((c) => `<li class="${c.ok ? "" : "bad"}">${esc(c.check)}<small>${esc(c.detail)} — ${esc(c.verifiedBy)}</small></li>`).join("")}</ul></div>`).join("") || "<p class='sub'>None yet.</p>"}`);
 }
 
-export function sessionPage(id: string, kind: string, target: Node | undefined, maxLen: number): string {
+export function sessionPage(id: string, kind: string, target: Node | undefined, maxLen: number, prefill = ""): string {
   const verb = kind === "claim" ? "Post a claim" : kind === "attack" ? "Attack an entry" : "Support an entry";
   return page(verb, `
 <h1>${esc(verb)}</h1><p class="sub"><a href="/">← the argument</a></p>
@@ -144,7 +144,7 @@ ${target ? `<div class="entry ${esc(target.record.payload.kind)}"><blockquote>${
 <p>Status: <span id="state" class="state"></span></p><ul id="chain" class="chain"></ul>
 <section id="box" hidden><h2>2. Write it</h2>
 <p>${kind === "claim" ? "Your claim" : kind === "attack" ? "Why is the entry above wrong?" : "Why is the entry above right?"} Your phone will show you this text and ask you to sign. The phone shows only the beginning of a long text; what you sign is the whole text as you see it here.</p>
-<textarea id="text" rows="4" maxlength="${maxLen}"></textarea>
+<textarea id="text" rows="4" maxlength="${maxLen}">${esc(prefill)}</textarea>
 <p><button id="send">Send to my phone to sign</button> <span id="err" class="bad"></span></p></section>
 <section id="result"></section>
 <script>

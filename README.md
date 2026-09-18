@@ -79,6 +79,12 @@ verifier (Python/keripy): export.json ──▶ report
   enforced), checks registry ownership and issuance anchoring, orders
   revocation against issuer checkpoints, recomputes every strength with
   its own DF-QuAD. Exit status 0 only if everything passed.
+- **personal/** `python -m focus`: a personal attention list. Reads your
+  own Episteme library read-only and the community log through the
+  verifier, and says what deserves your attention, why, and what you
+  could do, including "answer this publicly" links into the signing
+  flow. Runs on your machine only. Optional; a scope change against the
+  brief (DESIGN.md D10). `personal/README.md`.
 - **common/** Signify helpers, the KERIA non-ASCII workaround, the log
   record format, the TypeScript DF-QuAD, the wallet stand-in.
 - **schema/** `EKKBYCMIW65PqoodeRGOWqCo33SpXihGDLs1hy6SDSXe`: `i`, `dt`,
