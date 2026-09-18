@@ -1,0 +1,222 @@
+# RUNBOOK
+
+Operator setup from zero, day-to-day, member revocation, and the key-loss
+drills. Each drill below says **what was actually done, on what, and what
+happened**, including the one that failed the first time. Everything here
+was run in **local mode** on macOS/Docker Desktop (arm64) on 2026-09-18
+with Signify clients standing in for phones. **Cloud mode and real phones
+have not been run for this repo**; §2–§5 of demo2's RUNBOOK (DNS records,
+Let's Encrypt, the AWS box, onboarding QR, "Misconfigured cloud agent"
+repair) were exercised for demo2 with the same `stack.sh` and are carried
+over unchanged, not re-run.
+
+Two modes, as in demo2. **Local**: one machine, plain HTTP; phones cannot
+use it. **Cloud**: same containers behind Veridian's traefik file on a
+public domain.
+
+## 0. What you need
+
+Linux box (Veridian's minimum: 4 vCPU, 8 GB, 20 GB) or a Mac for local
+mode; Docker + compose v2, git, jq, curl, openssl; Node 20 and Python 3.12
+only for tests and the verifier. Cloud: DNS A records for `keria`,
+`keria-ext`, `keria-boot`, `witness-0`…`witness-5`, `issuer`, and the log
+site (`claims` by default, `RP_SUBDOMAIN`) → the box; ports 80/443 open;
+`sudo mkdir -p /var/lib/letsencrypt`. Close 3110/3120 to the outside.
+
+## 1. From zero
+
+```
+git clone --recurse-submodules <repo> pilot && cd pilot     # infra/veridian @ ed015b1; do not edit it
+./infra/stack.sh up                                          # MODE=cloud for cloud, after cp infra/env.cloud.example infra/env.cloud
+cp infra/services.env.example infra/services.env             # then edit:
+```
+In `infra/services.env`: set `OPERATOR_TOKEN` (16+ characters; there is
+no default and the issuer refuses to start without one:
+`openssl rand -hex 16`). Cloud: also `PUBLIC_DOMAIN`, `ISSUER_PUBLIC_URL=
+https://issuer.<domain>`, `RP_PUBLIC_URL=https://<RP_SUBDOMAIN>.<domain>`,
+`WALLET_BOOT_URL=https://keria-boot.<domain>`, `WALLET_CONNECT_URL=
+https://keria.<domain>`. `services.env`, `secrets.env` and `env.generated`
+are git-ignored. **Commit none of them.**
+```
+./infra/services.sh up
+```
+This builds one image, starts the **issuer** (first start = inception
+ceremony: passcode generated into the `arglog_issuer-data` volume as
+`/data/issuer.bran`, identifier incepted with six witnesses threshold 4
+and a pre-committed next key, `agent` and `indexer` roles, schema
+location, registry `members`), pins the relying party to the issuer's AID
+and OOBI in `services.env`, and starts the **relying party**, which
+creates its own identifier and writes the **genesis record** through its
+own gate. `curl localhost:3120/healthz` → `{"ok":true,…,"records":1}`.
+
+**Back up now** (these two files and one line are all the secrets there
+are):
+```
+docker cp arglog-arglog-issuer-1:/data/issuer.bran <safe place>   # the issuer's keys, present and future
+docker cp arglog-arglog-log-1:/data/operator.bran  <safe place>   # the log operator's keys
+infra/secrets.env                                                  # KERIA_PASSCODE: losing it orphans every agent
+```
+plus the docker volumes `veridian-prod_keria-data`, `_keria-config`,
+`_witnesses-config`, `arglog_rp-data` (the log).
+
+Pages: operator `http://<box>:3110/` (user `operator`), the argument
+`http://<box>:3120/`. If demo2's containers run on the same box they keep
+3010/3020; ours are named `arglog-*` because docker DNS names on the
+shared network collide otherwise (DESIGN.md).
+
+Check the deployed processes end to end (stand-in phones):
+```
+OPERATOR_TOKEN=… npx tsx spike/12-drive-services.ts     # A claims, B attacks, 0.5000 → 0.2500, writes export.json
+cd verifier && python -m arglog_verifier ../export.json --issuer <issuer AID>
+```
+Done on 2026-09-18: verifier exit 0, same authors, `1/4`.
+
+## 2. Day-to-day
+
+- **Enrol a member**: operator page → handle → QR → member scans
+  (wallet: Home → Add connection → Scan) → accepts. Status runs
+  `waiting-for-scan → issuing → granted → admitted`. First-time wallets
+  need the onboarding QR first (operator page, collapsed line at the
+  top). Then hand them TESTER.md.
+- **Logs**: `./infra/services.sh logs`; KERIA: `docker logs
+  veridian-prod-keria-1`. Every gate decision: `/decisions`.
+- **Stop/start** keeps everything: `./infra/services.sh down|up`,
+  `./infra/stack.sh down|up`. `wipe` deletes identifiers, keys and the log.
+- **Tests** (stack up, local): `npm install && npm test`;
+  `cd verifier && pip install -r requirements.txt && python -m pytest -q`.
+  The end-to-end test runs the verifier if `VERIFIER_PYTHON` points at an
+  interpreter with keripy; otherwise that one test reports itself skipped
+  and says the verifier was not exercised.
+
+## 3. Revoke a member — drilled
+
+```
+docker compose --env-file infra/services.env -f infra/compose.services.yaml \
+  exec arglog-issuer npx tsx issuer/src/main.ts revoke <credential SAID>      # SAIDs: operator page, or GET /api/members
+```
+What it does: reads the log head from the relying party (`LOG_URL/log/
+head`), **seals that head in the issuer's key event log**, then revokes
+(next issuer event). If it cannot read the head it refuses and anchors
+nothing. `--no-checkpoint` overrides that and costs the member's
+un-checkpointed history (DESIGN.md D6); do not use it casually.
+
+Drilled (`spike/13-revocation-drill.ts`, against the containers, after a
+key rotation): member posts → accepted; CLI printed `checkpoint: log head
+… (entry 3) anchored at issuer event 7`, `revoked … at issuer event 8`;
+the member's next entry, really signed, was rejected `at check standing`;
+claim strength unchanged; the export verified independently with
+`standing: revoked at issuer event #8; this entry (#3) is inside the log
+head #3 the issuer sealed before revoking`. The site picks up revocations
+made elsewhere within about 30 s for display, and at once for any
+decision.
+
+`main.ts checkpoint` seals the current head without revoking anything.
+Nothing does this on a schedule.
+
+## 4. Key drills
+
+### 4.1 Signing key leaked → rotate — drilled, worked
+```
+… exec arglog-issuer npx tsx issuer/src/main.ts status
+… exec arglog-issuer npx tsx issuer/src/main.ts rotate
+```
+Result: `rotated: event 4 -> 5`; next-key digest changed; members issued
+before still verified, a new member was enrolled and revoked after it,
+and the verifier replayed the issuer's log `#0..#8` across the rotation.
+**What this does not answer:** both keys derive from `issuer.bran`.
+Rotation answers a leaked *signing key*, not a leaked or lost passcode
+file (same as demo2).
+
+### 4.2 Issuer box lost, passcode file and KERIA volume survive — drilled; FAILED first, fixed, then worked
+Done: copied `issuer.bran` out, destroyed the issuer container **and**
+its data volume, created an empty volume containing only `issuer.bran`
+(owner uid 1000, mode 600), started the issuer against the same KERIA.
+
+First attempt **failed**: the issuer crash-looped with
+`HTTP POST /identifiers/issuer/locschemes - 400 … "unable to verify end
+role reply message"`. Cause (spike/14): this KERIA/signify pair refuses
+to publish a location whenever the identifier's latest key event is an
+interaction event, and the issuer, having lost its local note that the
+location was already published, tried again. Fix: both services now ask
+KERIA what is published and skip if unchanged. Second attempt: same AID,
+same registry, all members listed with correct `iss`/`rev` status. (Not
+done on the restored issuer: issuing a new credential from it. The test
+suites, which passed after the fix, use their own issuer instances.)
+
+**Not drilled:** restoring onto a *different host* (moving the KERIA and
+witness volumes). The issuer's identifier, registry and issued
+credentials live in KERIA's volume, encrypted to keys derived from
+`issuer.bran`; the file alone, without that volume, restores nothing.
+**If you must change `ISSUER_PUBLIC_URL` on restore**, rotate first
+(`main.ts rotate`), then start with the new URL; the error message says
+this too.
+
+### 4.3 Member restores their wallet from the recovery phrase — drilled in stand-in form only
+The wallet turns the phrase back into its passcode and **connects** to
+the agent that already exists in this KERIA (no boot; needs only the
+connect URL and the phrase; `agent.ts recoverKeriaAgent`).
+`spike/15-wallet-recovery-standin.ts` does the same with a Signify
+client: same identifier after recovery, the recovered client's next
+event was accepted and witnessed, a wrong passcode was refused (`agent
+does not exist`). **A real phone restoring from its written phrase
+against this KERIA has not been done** and must be before enrolling
+anyone real. It can only work while this KERIA's volume exists: lose
+the KERIA volume or `KERIA_PASSCODE` and every member's identifier is
+gone, phrase or not.
+
+### 4.4 Issuer passcode gone for good — drilled
+There is no recovery: the pre-committed next key derives from the same
+lost file. Done, on the test stack: exported the existing log; destroyed
+the issuer container and volume **without** a backup; started the issuer
+→ a **new** identifier (`EAwNv9k…` ≠ `ENDFGb_…`); re-pinned the relying
+party (`TRUSTED_ISSUER_AID/OOBI` in `services.env`).
+
+- **The existing log**: the relying party **refused to start on it**:
+  `the log on disk belongs to a different operator or issuer than the
+  one configured; refusing to continue it`. A log names its one issuer
+  in its genesis record; it cannot be continued under another. Moved
+  `log.jsonl` and `decisions.jsonl` aside inside the volume (kept, not
+  deleted); on restart the relying party wrote a **new genesis** naming
+  the new issuer. The archived export **still verifies** under the old
+  issuer AID (done: exit 0, 3 of 3 entries valid). It is a closed,
+  checkable record; nobody can add to it or revoke within it any more.
+- **Re-issuance**: every member scans a new operator QR and gets a new
+  credential; their identifier and phone are unchanged. Old credentials
+  are rejected at presentation ("not from the community issuer") — by
+  code path, not separately drilled.
+- **Re-pinning the trusted issuer**: `services.env` for the relying
+  party; and **everyone who verifies** must be told the new issuer AID
+  out of band (`--issuer`). That step is social and is the real cost.
+- **Not possible**: revoking old credentials (the old registry is
+  orphaned), carrying strengths or targets across logs.
+
+So: keep `issuer.bran` like a CA key, in two places.
+
+## 5. Things that break, and what they look like
+
+Everything in demo2's RUNBOOK §8 still applies (KERIA 500 on boot;
+"Misconfigured cloud agent" and the frozen per-agent config repair;
+phone never shows the credential request → indexer role/`RP_PUBLIC_URL`;
+"schema not found"; KERIA restarts after a bad IPEX grant; 400 Invalid
+JSON on non-ASCII; traefik default certificate on Docker 29). New:
+
+- **Relying party stuck at `{"ok":false}`, log says `could not resolve
+  OOBI http://…/oobi/<schema>… timed out`**: KERIA cannot reach the
+  relying party under the name in `RP_PUBLIC_URL`. Seen when demo2's
+  `relying-party` container on the same network answered for that name.
+- **Issuer or relying party exits with `could not publish location … Rotate
+  the identifier's key, then start again`**: you changed a public URL
+  after the identifier had interaction events (§4.2).
+- **Relying party exits with `log file … is damaged … Refusing to start
+  on it`**: `log.jsonl` no longer hash-chains. Restore it from a backup
+  or an export (`.log` of `/export.json` is the same records, one JSON
+  array instead of lines). It will not repair or skip records.
+- **`refusing to revoke: … Nothing was anchored or revoked`**: the
+  issuer could not read `LOG_URL/log/head`. Fix the relying party first.
+
+## 6. Not done
+
+- Cloud deployment and any real phone, for this repo.
+- A phone-side recovery drill (§4.3); a cross-host restore (§4.2).
+- Backups beyond "copy two passcode files, `secrets.env`, the volumes".
+- Monitoring; scheduled checkpoints.
