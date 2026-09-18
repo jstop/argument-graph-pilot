@@ -32,6 +32,18 @@ python -m focus engage <idea>       python -m focus snooze <idea> 30
 python -m focus dismiss <idea>      python -m focus over <ideaA> <ideaB>
 ```
 
+## The page does all of it
+
+`python -m focus serve` → http://127.0.0.1:3130/ . Everything below in this
+file can be done there: **Community** (pull and verify, see entries, link
+and unlink), **My ideas** (find, open, rank one over another), every
+item's **how this got here** page (trace, respond, link, compare),
+**Rules** (edit the numbers, try, replay over your history, adopt),
+**History** (every list shown, re-audited). The page and the terminal can
+be used at the same time; they write one locked, hash-chained log. Forms
+carry a per-start token and the server answers only to 127.0.0.1, so
+another website open in your browser cannot operate it.
+
 ## Zoom in, look back, try changes
 
 ```

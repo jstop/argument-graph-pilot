@@ -7,6 +7,7 @@ community log). It lives OUTSIDE the Episteme library and outside this
 repo: default ~/.local/share/arglog-focus/.
 """
 import datetime as dt
+import fcntl
 import hashlib
 import json
 import os
@@ -30,7 +31,13 @@ class FocusLog:
         self.dir = Path(directory or default_dir())
         self.dir.mkdir(parents=True, exist_ok=True)
         self.path = self.dir / "focus.jsonl"
+        self._load()
+
+    def _load(self):
+        """(Re)read the file. The page and the terminal are separate processes writing one log, so what is on disk,
+        not what this process remembers, is the truth: state() and append() both come through here first."""
         self.events = []
+        self._size = self.path.stat().st_size if self.path.exists() else 0
         prev = None
         if self.path.exists():
             for n, line in enumerate(self.path.read_text(encoding="utf-8").splitlines()):
@@ -46,17 +53,27 @@ class FocusLog:
     def append(self, type_: str, data: dict, at: str | None = None) -> dict:
         if type_ not in EVENTS:
             raise ValueError(type_)
+        with open(self.path, "a", encoding="utf-8") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)              # one writer at a time; the chain link is read under the lock
+            self._load()
+            ev = self._append_locked(f, type_, data, at)
+        self._size = self.path.stat().st_size
+        return ev
+
+    def _append_locked(self, f, type_, data, at):
         body = {"type": type_, "at": at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "data": data,
                 "prev": self.events[-1]["hash"] if self.events else None}
         ev = dict(body, hash=hashlib.sha256(_canon(body)).hexdigest())
-        with open(self.path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+        f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+        f.flush()
         self.events.append(ev)
         return ev
 
     # ---- replay ---------------------------------------------------------
     def state(self, upto: int | None = None) -> dict:
         """upto: replay only the first `upto` events (what focus knew at that point)."""
+        if (self.path.stat().st_size if self.path.exists() else 0) != self._size:
+            self._load()
         links: dict[tuple, dict] = {}        # (idea, entry) -> {relation, at}
         wins: dict[str, int] = {}
         losses: dict[str, int] = {}

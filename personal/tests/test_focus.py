@@ -225,3 +225,99 @@ def test_replaying_a_candidate_pipeline_over_your_own_history(lib, tmp_path, rec
     au.produce(args, log, now=NOW)
     assert [l["pipeline"] for l in log.state()["lists"]] == [pl.digest(pl.DEFAULT), pl.digest(cand)]
     assert all(row["reproduces"] for row in au.audit(args, log))
+
+
+# ---- the page can do everything the terminal can ---------------------------------------------------
+
+import re                                                          # noqa: E402
+import threading                                                   # noqa: E402
+import urllib.error                                                # noqa: E402
+import urllib.parse                                                # noqa: E402
+import urllib.request                                              # noqa: E402
+
+from focus import web                                              # noqa: E402
+
+
+@pytest.fixture()
+def site(lib, tmp_path, recorded):
+    log, args, comm = setup(lib, tmp_path, recorded)
+    args.port = 0
+    httpd, ui = web.make_server(args, log)
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{httpd.server_address[1]}"
+
+    def get(path):
+        return urllib.request.urlopen(base + path).read().decode("utf-8")
+
+    def post(path, token=None, host=None, **fields):
+        data = urllib.parse.urlencode({"token": ui.token if token is None else token, **fields}).encode()
+        req = urllib.request.Request(base + path, data=data, headers={"Host": host} if host else {})
+        try:
+            r = urllib.request.urlopen(req)
+            return r.status, r.read().decode("utf-8")
+        except urllib.error.HTTPError as e:
+            return e.code, e.read().decode("utf-8")
+    yield SimpleNamespace(get=get, post=post, log=log, comm=comm, ui=ui)
+    httpd.shutdown()
+
+
+def fresh(site):
+    return FocusLog(site.log.dir).state()          # what is on disk, not what the server has in memory
+
+
+def test_pages_render_and_every_form_carries_the_token(site):
+    for path in ("/", "/ideas", "/ideas?q=water", "/community", "/pipeline", "/history", "/why?key=idea:water-safe"):
+        page = site.get(path)
+        assert "<nav>" in page
+        assert len(re.findall(r'<form method="post"', page)) == page.count(f'name="token" value="{site.ui.token}"')
+    assert "Tap water here is safe to drink." in site.get("/ideas?q=tap")
+
+
+def test_a_post_without_the_token_or_to_another_hostname_changes_nothing(site):
+    claim = next(e for e in site.comm.entries if e.kind == "claim")
+    before = len(fresh(site)["links"])
+    assert site.post("/link", token="guess", idea="water-safe", entry=claim.said, relation="same")[0] == 403
+    assert site.post("/link", host="evil.example:80", idea="water-safe", entry=claim.said, relation="same")[0] == 403
+    assert len(fresh(site)["links"]) == before
+
+
+def test_link_compare_respond_and_unlink_from_the_page(site):
+    claim = next(e for e in site.comm.entries if e.kind == "claim")
+    assert site.post("/link", idea="no-such-idea", entry=claim.said, relation="same")[0] == 400
+    assert site.post("/link", idea="water-safe", entry=claim.said, relation="same", back="/community")[0] == 200     # 303 followed
+    assert ("water-safe", claim.said) in fresh(site)["links"]
+    assert "bob attacked it" in site.get("/")                       # the attack is now pressure on my idea, on the page
+    why = site.get("/why?key=idea:water-safe")
+    assert "Unlink" in why and "Every rule, fired or not" in why
+    site.post("/over", over="pipes-old", under="water-safe")
+    assert fresh(site)["wins"] == {"pipes-old": 1}
+    site.post("/respond", item="idea:water-safe", response="snoozed", days="60")
+    assert fresh(site)["last"]["idea:water-safe"]["until"] == (dt.date.today() + dt.timedelta(days=60)).isoformat()
+    site.post("/unlink", idea="water-safe", entry=claim.said)
+    assert fresh(site)["links"] == {}
+
+
+def test_edit_try_replay_and_adopt_a_pipeline_from_the_page(site):
+    site.get("/")                                                   # a list gets recorded: pipes-old is shown
+    site.post("/respond", item="idea:pipes-old", response="dismissed")
+    form = {f"{sec}.{k}": v for sec in ("signals", "weight", "thresholds") for k, v in pl.DEFAULT[sec].items()}
+    form.update({"budget": 5, "outside_seat": "on", "signals.suspect": 0, "signals.unreviewed": 0})
+    status, page = site.post("/pipeline", do="try", **form)
+    assert status == 200 and "OUT" in page and "suspect: 1.5 → 0" in page
+    assert fresh(site)["pipelines"] == []                           # trying adopts nothing
+    status, page = site.post("/pipeline", do="replay", **form)
+    assert "<td>dismissed</td><td>1</td><td>1</td><td>0</td>" in page
+    status, page = site.post("/pipeline", do="adopt", note="stop nagging", **form)
+    adopted = fresh(site)["pipelines"]
+    assert status == 200 and len(adopted) == 1 and adopted[0]["pipeline"]["signals"]["suspect"] == 0 and adopted[0]["note"] == "stop nagging"
+    assert site.post("/pipeline", do="try", **dict(form, **{"thresholds.low": "9/10", "thresholds.high": "1/10"}))[0] == 400   # refused, not guessed
+    assert "reproduces" in site.get("/history")
+
+
+def test_the_page_and_the_terminal_can_both_write_the_same_log_without_breaking_its_chain(tmp_path):
+    page, terminal = FocusLog(tmp_path / "f"), FocusLog(tmp_path / "f")     # two processes' views of one file
+    page.append("Compared", {"over": "a", "under": "b"})
+    terminal.append("Compared", {"over": "c", "under": "d"})               # did not know about the page's write
+    page.append("Compared", {"over": "e", "under": "f"})
+    assert page.state()["wins"] == {"a": 1, "c": 1, "e": 1} == terminal.state()["wins"]
+    assert len(FocusLog(tmp_path / "f").events) == 3                        # and it still chains when read from scratch

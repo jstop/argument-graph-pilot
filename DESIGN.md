@@ -279,6 +279,13 @@ hand. The owner should decide whether the non-goal stands as written.
   what you engaged with and stop showing what you dismissed. That is a
   small, biased sample (you only responded to what the old rules showed
   you) and the tool says so. Nothing tunes itself.
+- **The page can do everything the terminal can** (pull, find, link,
+  compare, respond, edit/try/replay/adopt the pipeline, audit). Because
+  it changes state, every POST needs a token minted at start and every
+  request must be addressed to 127.0.0.1/localhost (tested: a POST
+  without the token or with another Host changes nothing). Page and
+  terminal write one log under a file lock, re-reading before each
+  append (tested).
 - **Not built:** maturity (exploring/developing/settled) as its own
   axis, since Episteme has no such field (HYPOTHESIS is the nearest);
   writing anything back into Episteme (e.g. a community entry as
