@@ -3,8 +3,7 @@
 # live   main, nightly, and on demand: Veridian's real compose stack (six witnesses + KERIA) is
 #        brought up in the runner and the issuer and end-to-end suites run against it, including the
 #        Python verifier reproducing every number. Nightly catches upstream drift.
-# deploy main only, after both; waits in the `production` environment for the owner's approval,
-#        then asks the box to deploy THIS commit. See ops/box/deploy-gate.sh for what that key can do.
+# Deploying is a separate workflow (deploy.yml) that only the owner starts.
 name: ci
 on:
   push:
@@ -66,25 +65,3 @@ jobs:
         env: { VERIFIER_PYTHON: python }
       - if: failure()
         run: docker ps -a; docker logs --tail 80 veridian-prod-keria-1 || true
-
-  deploy:
-    needs: [fast, live]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    environment: { name: production, url: "https://claims.pilot.joshautomates.com/" }
-    concurrency: { group: deploy-production, cancel-in-progress: false }
-    steps:
-      - name: ask the box to deploy this commit
-        env:
-          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          HOST: ${{ vars.DEPLOY_HOST }}
-          HOST_KEY: ${{ vars.DEPLOY_HOST_KEY }}     # pinned; no trust-on-first-use
-        run: |
-          install -m 700 -d ~/.ssh && printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
-          printf '%s %s\n' "$HOST" "$HOST_KEY" > ~/.ssh/known_hosts
-          ssh -i ~/.ssh/deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes "ubuntu@$HOST" "$GITHUB_SHA"
-      - name: the public site answers and its log still verifies the way a stranger would check it
-        run: |
-          curl -sf -m 20 https://claims.pilot.joshautomates.com/healthz | tee /dev/stderr | jq -e '.ok == true'
-          curl -sf -m 20 https://issuer.pilot.joshautomates.com/healthz | jq -e '.ok == true'

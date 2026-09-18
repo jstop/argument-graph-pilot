@@ -1,0 +1,44 @@
+# Deploys ONE commit of main to the pilot box, and only when the owner starts it:
+#     gh workflow run deploy            (or Actions -> deploy -> Run workflow)
+# Starting it is the approval. (Required reviewers and branch protection need GitHub Pro or a
+# public repository; this repository is private on the free plan, so the gate is explicit.)
+# It refuses unless the `fast` AND `live` CI jobs succeeded for exactly this commit.
+# What the key can do on the box: ops/box/deploy-gate.sh. What the box checks: ops/deploy-remote.sh.
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      confirm: { description: 'Type "deploy" to deploy the current head of main to the live pilot', required: true }
+
+permissions: { contents: read, actions: read, checks: read }
+concurrency: { group: deploy-production, cancel-in-progress: false }
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' && inputs.confirm == 'deploy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: { name: production, url: "https://claims.pilot.joshautomates.com/" }
+    steps:
+      - name: CI, including the live stack, passed for exactly this commit
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          runs="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs" --jq '[.check_runs[] | select(.name=="fast" or .name=="live") | {name, conclusion}]')"
+          echo "$runs"
+          for job in fast live; do
+            echo "$runs" | jq -e --arg j "$job" 'any(.[]; .name==$j and .conclusion=="success")' >/dev/null \
+              || { echo "::error::CI job '$job' has not succeeded for $GITHUB_SHA; not deploying"; exit 1; }
+          done
+      - name: ask the box to deploy this commit
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ vars.DEPLOY_HOST }}
+          HOST_KEY: ${{ vars.DEPLOY_HOST_KEY }}     # pinned; no trust-on-first-use
+        run: |
+          install -m 700 -d ~/.ssh && printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s %s\n' "$HOST" "$HOST_KEY" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes "ubuntu@$HOST" "$GITHUB_SHA"
+      - name: the public site answers
+        run: |
+          curl -sf -m 20 https://claims.pilot.joshautomates.com/healthz | tee /dev/stderr | jq -e '.ok == true'
+          curl -sf -m 20 https://issuer.pilot.joshautomates.com/healthz | jq -e '.ok == true'
