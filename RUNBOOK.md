@@ -47,7 +47,7 @@ creates its own identifier and writes the **genesis record** through its
 own gate. `curl localhost:3120/healthz` → `{"ok":true,…,"records":1}`.
 
 **Back up now** (these two files and one line are all the secrets there
-are):
+are; on the AWS box §1c does this nightly):
 ```
 docker cp arglog-arglog-issuer-1:/data/issuer.bran <safe place>   # the issuer's keys, present and future
 docker cp arglog-arglog-log-1:/data/operator.bran  <safe place>   # the log operator's keys
@@ -177,6 +177,82 @@ failure → the previous image is put back. It never touches volumes,
 §9; no Terraform), DNS, the witnesses/KERIA stack (still started by
 `stack.sh` from `~/pilot` on the box), backups of the three secrets and
 the volumes (§1), monitoring or alerting (none), and demo2.
+
+## 1c. AWS: what is defined, backed up, watched, and how to get in (done 2026-09-18)
+
+**Defined in Terraform** (`infra/aws/`, state in a private, versioned,
+encrypted bucket with S3 locking; the bucket itself was made once by
+hand with the CLI): the box, its firewall, its elastic IP and the eleven
+DNS records were **imported** from what demo2 made by hand (15 imports,
+nothing replaced; `prevent_destroy` on the box, the address and the
+backup bucket). Added: the box's role, the backup bucket, nightly
+snapshots, health checks, alarms, the alert topic.
+```
+cd infra/aws && terraform init && terraform plan
+```
+Provider is pinned `~> 5.80`, the same major version as the owner's
+Episteme Terraform.
+
+**Getting onto the box: AWS Session Manager. Port 22 is closed** (applied
+and tested: SSH times out). No key file on any one laptop is needed; access
+follows the AWS login. `aws ssm start-session --target <instance>` (needs
+the Session Manager plugin; AWS CloudShell in a browser has it, which
+works from a phone), or one-off commands with `aws ssm send-command`.
+To reopen SSH in an emergency: `terraform apply -var ssh_cidr=<your
+ip>/32`. The agent had to be restarted once to notice the new role.
+
+**Backups, two independent kinds:**
+- *Whole-disk snapshots*, nightly 08:30 UTC, 14 kept (AWS Data Lifecycle
+  Manager, anything tagged `Snapshots=nightly`).
+- *File-level*, nightly 08:40 UTC, to `s3://arglog-pilot-backups-<acct>/
+  box/<time>/`, 35 days: `~/arglog-backup.sh` (source `ops/box/
+  backup.sh`) archives the seven docker volumes (KERIA's databases =
+  every member's identifier; the witnesses' keystores; issuer and log
+  data **including both passcode files and the log**; demo2's volumes),
+  the env files with KERIA's passcode and the operator token, and
+  traefik's certificate store. Containers are **paused** for the copy
+  (measured: 5 s) so LMDB is captured crash-consistently, and always
+  unpaused. The box's role can only **put** there; tested: it cannot
+  list or read earlier backups. **The bucket holds the issuer's keys.**
+  Whoever can read it can be the issuer. Today that is the account's
+  IAM users; it is server-side encrypted, not client-side.
+
+**Restore, drilled for real:**
+- *From S3:* downloaded off-box, 8 of 8 checksums good, `issuer.bran`,
+  `operator.bran`, `log.jsonl`, `secrets.env` present; the restored
+  log's hash chain was intact and its head equalled the head recorded
+  at backup time.
+- *From a snapshot onto a fresh instance:* snapshot → new instance with
+  no inbound access → reached over Session Manager. **Finding:** an
+  Ubuntu instance given the snapshot as a *second* disk boots **from
+  it** (same filesystem label), so the whole pilot came up by itself on
+  the new instance: 9 containers, the same operator identifier, the same
+  issuer identifier, the same log head as production. That is the
+  restore working end to end, and it is also a hazard: for about five
+  minutes a second copy of every identifier was alive (no inbound; it
+  only reads from the real box through public DNS). Its cron was
+  removed, containers stopped, instance terminated. **To only inspect
+  a snapshot, attach it to an instance that is already running.**
+- **Disaster procedure that follows** (not executed, because it moves
+  production): launch an instance from the latest snapshot with the
+  box's role and firewall, stop the old box, move the elastic IP
+  (`aws ec2 associate-address`), `terraform import` the new instance.
+  DNS, witness URLs and certificates all follow the address. Expect to
+  lose what happened since the snapshot: at most a day of log entries
+  and enrolments; the file-level backup may be newer for the log.
+
+**Watched, from outside:** HTTPS checks every 30 s on the argument site,
+the issuer, KERIA and one witness; alarms for those, for the root disk
+over 80 % (the box reports it every 5 minutes) and for **no successful
+backup in 26 hours**, all to the SNS topic `arglog-pilot-alerts`.
+**Nobody is subscribed yet**: set `alert_email` and/or `alert_sms` and
+apply, then confirm the email. Until then the alarms change colour in the
+console and tell no one.
+
+**Seen while here:** unattended security upgrades are on; the box says a
+**reboot is required** for a pending update. Not done: it restarts every
+service and nobody has tested that everything comes back on this box
+(the snapshot drill suggests it does).
 
 ## 2. Day-to-day
 
@@ -326,4 +402,4 @@ JSON on non-ASCII; traefik default certificate on Docker 29). New:
 - Any real phone, for this repo.
 - A phone-side recovery drill (§4.3); a cross-host restore (§4.2).
 - Backups beyond "copy two passcode files, `secrets.env`, the volumes".
-- Monitoring and alerting; scheduled checkpoints; the box and DNS as code; automated backups.
+- Alert subscribers (§1c); the pending reboot; the disaster procedure executed for real; scheduled checkpoints; client-side encryption of backups; the witness/KERIA stack run from this repo instead of demo2's directory.
