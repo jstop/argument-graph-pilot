@@ -190,3 +190,29 @@ export function countSignatures(atc: string): { controllerSignatures: number; wi
   }
   return { controllerSignatures: counts["-A"], witnessReceipts: counts["-B"] };
 }
+
+/**
+ * Publishes `url` as the identifier's location unless KERIA already serves
+ * exactly that, read back the way the wallet reads it (the "indexer" OOBI).
+ *
+ * Why not simply publish on every start: on this KERIA fork + signify-ts
+ * pair addLocScheme is refused with 400 "unable to verify end role reply
+ * message" whenever the identifier's LATEST key event is an interaction
+ * event (spike/14; found by the issuer-restore drill). A service that has
+ * lost its local "already published" note would then never start again.
+ * A rotation makes the call work, so when the URL really has to change
+ * the error says so instead of failing obscurely.
+ */
+export async function ensureLocation(client: SignifyClient, alias: string, aid: string, url: string): Promise<"already-published" | "published"> {
+  const base = (await agentOobi(client, alias)).split("/oobi/")[0];
+  const text = await fetch(`${base}/oobi/${aid}/indexer/${aid}`).then((r) => (r.ok ? r.text() : ""), () => "");
+  const urls = [...text.matchAll(/"url":"([^"]+)"/g)].map((m) => m[1]);
+  if (urls.length > 0 && urls[urls.length - 1] === url) return "already-published";
+  try {
+    await waitOp(client, await (await client.identifiers().addLocScheme(alias, { url, scheme: new URL(url).protocol.replace(":", "") })).op());
+  } catch (e) {
+    throw new Error(`could not publish location ${url} (currently published: ${urls[urls.length - 1] ?? "none"}): ${e instanceof Error ? e.message : e}. ` +
+      "Known KERIA/signify behaviour when the identifier's latest key event is an interaction event (spike/14). Rotate the identifier's key, then start again.");
+  }
+  return "published";
+}

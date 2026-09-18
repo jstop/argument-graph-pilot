@@ -33,7 +33,7 @@ export function buildServer(rp: RelyingParty): Server {
     const path = url.pathname;
     const get = req.method === "GET";
 
-    if (get && path === "/healthz") return json(res, 200, { ok: !!rp.gate, operator: rp.aid || null, records: rp.gate?.log.length ?? 0 });
+    if (get && path === "/healthz") return json(res, 200, { ok: !!rp.gate?.genesis, operator: rp.aid || null, records: rp.gate?.log.length ?? 0 });
     if (get && path === `/oobi/${rp.config.schemaSaid}`) {
       res.writeHead(200, { "Content-Type": "application/schema+json", "Access-Control-Allow-Origin": "*" });
       res.end(rp.schemaJson());

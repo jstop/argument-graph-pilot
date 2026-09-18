@@ -184,8 +184,11 @@ def _verify(rep, log_add, log, creds, rp, trusted_issuer):
     index_of = {e.get("d"): i for i, e in enumerate(log)}
     checkpoints = []   # (issuer sn, log index)
     missing = []
+    sealed_second = {}  # credential SAID -> issuer sn that seals a SECOND registry event for it (only a revocation can be one)
     for serder, _, _ in rp.accepted_events(issuer):
         for seal in serder.seals or []:
+            if set(seal.keys()) == {"i", "s", "d"} and int(seal["s"], 16) == 1:
+                sealed_second.setdefault(seal["i"], serder.sn)
             if list(seal.keys()) == ["d"]:
                 if seal["d"] in index_of:
                     checkpoints.append((serder.sn, index_of[seal["d"]]))
@@ -248,13 +251,17 @@ def _verify(rep, log_add, log, creds, rp, trusted_issuer):
             continue
 
         # 3 standing
-        if state.et in (coring.Ilks.iss, coring.Ilks.bis):
-            r.add("standing", True, "issued, not revoked as of the exported registry")
+        revoked_in_tel = state.et not in (coring.Ilks.iss, coring.Ilks.bis)
+        if not revoked_in_tel and cred_said not in sealed_second:
+            r.add("standing", True, "issued; no revocation in the exported registry and none sealed in the issuer's log")
         else:
-            rev_sn = int(state.a["s"])
+            # The issuer's own log is the authority: an export that leaves out the revocation event
+            # cannot hide the seal the issuer's log carries for it.
+            rev_sn = int(state.a["s"]) if revoked_in_tel else sealed_second[cred_said]
             covered = max((idx for sn, idx in checkpoints if sn < rev_sn), default=-1)
             r.add("standing", n <= covered,
-                  f"revoked at issuer event #{rev_sn}; " +
+                  (f"revoked at issuer event #{rev_sn}; " if revoked_in_tel else
+                   f"the issuer's log seals a revocation at event #{rev_sn} that the export withholds; ") +
                   (f"this entry (#{n}) is inside the log head #{covered} the issuer sealed before revoking" if n <= covered else
                    f"the last log head the issuer sealed before that is #{covered}, this entry is #{n}: "
                    f"signed after revocation, or not provably before it"))

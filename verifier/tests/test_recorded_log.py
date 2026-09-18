@@ -142,3 +142,17 @@ def test_payload_signed_for_another_log_is_rejected(recorded):
     b = copy.deepcopy(recorded)
     b["log"][1]["payload"]["log"] = b["log"][1]["d"]
     assert failed(verify_bundle(b))[1] == "record"
+
+
+def test_export_that_withholds_the_revocation_event_cannot_hide_it():
+    b = load("recorded-post-revocation.json")
+    rex = b["log"][4]["payload"]["credential"]
+    cesr = b["credentials"][rex]
+    cut = cesr.index('{"v":"KERI10JSON', cesr.index('"t":"rev"') - 40)
+    end = cesr.index('{"v":"ACDC')
+    assert '"t":"rev"' in cesr[cut:end]
+    b["credentials"][rex] = cesr[:cut] + cesr[end:]            # registry now says: issued
+    rep = verify_bundle(b)
+    assert failed(rep)[4] == "standing"
+    assert "withholds" in dict((n, d) for n, _, d in rep.entries[3].checks)["standing"]
+    assert failed(rep)[3] is None                               # his earlier entry is still inside the sealed head

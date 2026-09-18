@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { SignifyClient } from "signify-ts";
 import {
-  agentOobi, connect, installAsciiJsonBodies, JsonStore, loadOrCreateBran, resolveOobi,
+  agentOobi, ensureLocation, connect, installAsciiJsonBodies, JsonStore, loadOrCreateBran, resolveOobi,
   toadFor, waitOp, witnessAidsFromAgentConfig,
   type KeriaEndpoints,
 } from "@pilot/common";
@@ -135,14 +135,8 @@ export class Issuer {
     if (!roles.some((r) => r.role === "indexer")) {
       await waitOp(this.client, await (await this.client.identifiers().addEndRole(ALIAS, "indexer", this.aid)).op());
     }
-    if (this.store.value.publishedUrl !== this.config.publicUrl) {
-      const url = this.config.publicUrl;
-      await waitOp(this.client, await (await this.client.identifiers().addLocScheme(ALIAS, {
-        url, scheme: new URL(url).protocol.replace(":", ""),
-      })).op());
-      this.store.update((s) => { s.publishedUrl = url; });
-      log(`published schema location ${url}`);
-    }
+    // Asked of KERIA, not of our own notes: the notes die with the data volume (restore drill, RUNBOOK).
+    if ((await ensureLocation(this.client, ALIAS, this.aid, this.config.publicUrl)) === "published") log(`published schema location ${this.config.publicUrl}`);
 
     let registries = await this.client.registries().list(ALIAS);
     if (registries.length === 0) {

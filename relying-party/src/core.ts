@@ -11,7 +11,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import signify, { type SignifyClient } from "signify-ts";
 import {
-  agentOobi, connect, countSignatures, installAsciiJsonBodies, JsonStore, loadOrCreateBran,
+  agentOobi, connect, countSignatures, ensureLocation, installAsciiJsonBodies, JsonStore, loadOrCreateBran,
   resolveOobi, toadFor, waitOp, witnessAidsFromAgentConfig, type KeriaEndpoints,
 } from "@pilot/common";
 import { entryPayload, EXPORT_FORMAT, genesisPayload, type EntryPayload, type Kind } from "@pilot/common/src/log";
@@ -88,11 +88,7 @@ export class RelyingParty implements KeriView {
     // demo2, first phone run: without an indexer role and location the wallet drops our requests silently.
     const roles: Array<{ role: string }> = await (await this.client.fetch(`/identifiers/${ALIAS}/endroles`, "GET", null)).json();
     if (!roles.some((r) => r.role === "indexer")) await waitOp(this.client, await (await this.client.identifiers().addEndRole(ALIAS, "indexer", this.aid)).op());
-    if (this.store.value.publishedUrl !== this.config.publicUrl) {
-      const url = this.config.publicUrl;
-      await waitOp(this.client, await (await this.client.identifiers().addLocScheme(ALIAS, { url, scheme: new URL(url).protocol.replace(":", "") })).op());
-      this.store.update((st) => { st.publishedUrl = url; });
-    }
+    await ensureLocation(this.client, ALIAS, this.aid, this.config.publicUrl);
     const hinted = this.config.trustedIssuerOobi.split("/oobi/")[1]?.split("/")[0];
     if (hinted !== this.config.trustedIssuerAid) throw new Error(`TRUSTED_ISSUER_OOBI points at ${hinted}, not at the pinned issuer ${this.config.trustedIssuerAid}`);
     await resolveOobi(this.client, this.config.trustedIssuerOobi, "community-issuer");
