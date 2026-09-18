@@ -102,6 +102,74 @@ with `image "arglog-pilot:local": already exists` (no buildx on Ubuntu's
 docker.io); the image is built anyway and `services.sh up`, which builds
 one service at a time, is unaffected.
 
+## 1b. GitHub, CI and deploys
+
+Repository: `github.com/jstop/argument-graph-pilot`, **private**. Set up
+and exercised on 2026-09-18.
+
+**CI (`.github/workflows/ci.yml`)**, actions pinned by commit:
+- `fast`, every push and pull request (~2 min): secret scan over files
+  **and history** (`ops/secret-scan.sh`; it caught a planted token when
+  tested), types, both DF-QuAD implementations against the shared
+  vectors, the verifier against the recorded real log, page scripts.
+  `personal/` needs the owner's Episteme code, which is not in this
+  repo: its tests **skip in CI and say so**; they run on the owner's
+  machine. `make check` runs the same locally.
+- `live`, on main, nightly (07:17 UTC) and on demand: brings up
+  Veridian's real compose stack in the runner (`infra/stack.sh up`) and
+  runs the issuer and end-to-end suites, including the Python verifier
+  reproducing every number. Nightly is there to notice upstream drift
+  (images are digest-pinned, so drift should be rare; a failure means
+  something outside the pins moved).
+- Dependabot weekly for actions, npm and pip. **Not** for signify-ts
+  (vendored at the wallet's commit) or the Veridian images (digests in
+  `infra/`): those move only when the wallet moves, by hand.
+
+**Deploy (`.github/workflows/deploy.yml`)**: only when the owner starts
+it, and starting it is the approval:
+```
+gh workflow run deploy -f confirm=deploy        # or Actions → deploy → Run workflow
+gh run watch
+```
+It refuses unless `fast` **and** `live` succeeded for exactly that
+commit of main. GitHub's "required reviewers" and branch protection were
+both tried and **refused for a private repository on this plan** (HTTP
+422 / 403: needs Pro, or a public repository). Consequence: nothing
+stops a direct push to main; CI still runs on it, and nothing reaches
+the box without the owner starting a deploy.
+
+**What GitHub holds, and what it can do with it.** One secret,
+`DEPLOY_SSH_KEY` (environment `production`), plus the box's address and
+its **pinned** SSH host key as variables. On the box that key is bound
+to a forced command, `~/arglog-deploy-gate.sh` (source:
+`ops/box/deploy-gate.sh`, deliberately outside the checkout so a commit
+cannot rewrite the gate it passes through). Tested: with that key, `cat
+services.env` → refused; an unknown commit id → `not on origin/main;
+refusing`; port forwarding → `administratively prohibited`. The only
+thing it can do is ask the box to deploy a commit that is already on
+`origin/main`. The box fetches the code itself with its **own
+read-only** deploy key (generated on the box; the private half never
+left it; a push with it is refused). The operator's
+`credential-pilot.pem` is not in GitHub.
+
+**What a deploy does (`ops/deploy-remote.sh`, on the box):** tags the
+running image `:previous`, rebuilds, restarts both services, then
+requires: both healthy; the issuer is **the same identifier** as before;
+the log did **not shrink** and the previous head is still in it. Any
+failure → the previous image is put back and the run fails. It never
+touches volumes, `services.env`, KERIA or the witnesses.
+
+**Rotate the deploy key:** generate a new ed25519 key, replace the
+`github-actions deploy trigger` line in the box's
+`~/.ssh/authorized_keys` (keep the `command="…"` prefix), `gh secret set
+DEPLOY_SSH_KEY --env production < newkey`, delete the local copy.
+**Revoke CI's access entirely:** delete that one `authorized_keys` line.
+
+**Not under this control:** the box itself (made by hand, demo2 RUNBOOK
+§9; no Terraform), DNS, the witnesses/KERIA stack (still started by
+`stack.sh` from `~/pilot` on the box), backups of the three secrets and
+the volumes (§1), monitoring or alerting (none), and demo2.
+
 ## 2. Day-to-day
 
 - **Enrol a member**: operator page → handle → QR → member scans
@@ -250,4 +318,4 @@ JSON on non-ASCII; traefik default certificate on Docker 29). New:
 - Any real phone, for this repo.
 - A phone-side recovery drill (§4.3); a cross-host restore (§4.2).
 - Backups beyond "copy two passcode files, `secrets.env`, the volumes".
-- Monitoring; scheduled checkpoints.
+- Monitoring and alerting; scheduled checkpoints; the box and DNS as code; automated backups.

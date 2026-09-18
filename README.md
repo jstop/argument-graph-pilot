@@ -114,6 +114,16 @@ OPERATOR_TOKEN=… npx tsx spike/12-drive-services.ts   # the success criterion 
 
 Phones need cloud mode: RUNBOOK.md.
 
+## CI and deploys
+
+Every push: secret scan (files and history), types, both DF-QuAD
+implementations, the verifier on the recorded log. Main and nightly: the
+real Veridian stack in the runner with the issuer and end-to-end suites.
+Deploys are started by the owner, refuse unless both passed for that
+commit, and go through a key that can do nothing on the box but request
+a commit of main; the box rolls back if the issuer's identifier changes
+or the log shrinks. RUNBOOK §1b.
+
 ## Tests
 
 No test uses a fake signer or a mocked KEL. Negative gate tests are
