@@ -119,7 +119,7 @@ $("members").addEventListener("click", async (ev) => {
   say("Checkpointing the log, then revoking\u2026");
   let res = await fetch("/api/members/" + said + "/revoke", { method: "POST" });
   let out = await res.json();
-  if (res.status === 502 && confirm(out.error + "\n\nRevoke WITHOUT a checkpoint anyway?")) {
+  if (res.status === 502 && confirm(out.error + "\\n\\nRevoke WITHOUT a checkpoint anyway?")) {
     res = await fetch("/api/members/" + said + "/revoke", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ noCheckpoint: true }) });
     out = await res.json();
   }
