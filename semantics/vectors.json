@@ -1,0 +1,380 @@
+{
+  "status": "proposed",
+  "params": {
+    "semantics": "df-quad",
+    "base_score": "1/2",
+    "aggregation": "probabilistic-sum",
+    "influence": "df-quad-combination",
+    "arithmetic": "exact-rational",
+    "display": {"decimals": 4, "rounding": "half-even"},
+    "duplicates": "first-per-author-target-kind"
+  },
+  "vectors": [
+    {
+      "name": "single-claim",
+      "note": "No attackers, no supporters: va = vs = 0, strength is the base score.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"}
+      ],
+      "expect": {
+        "c": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "one-attack",
+      "note": "va = 1/2, vs = 0: 1/2 - 1/2*1/2 = 1/4.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "a": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "one-support",
+      "note": "vs = 1/2, va = 0: 1/2 + 1/2*1/2 = 3/4.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "s", "kind": "support", "author": "bob", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "3/4", "display": "0.7500", "counted": true},
+        "s": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "attack-and-support-equal",
+      "note": "va = vs = 1/2: strength stays at the base score.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "s", "kind": "support", "author": "carol", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "s": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "two-attackers",
+      "note": "F(1/2,1/2) = 1 - 1/4 = 3/4; 1/2 - 1/2*3/4 = 1/8.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a1", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "a2", "kind": "attack", "author": "carol", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "1/8", "display": "0.1250", "counted": true},
+        "a1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a2": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "attack-on-attack",
+      "note": "Reinstatement: b = 1/2, a = 1/4, c = 1/2 - 1/2*1/4 = 3/8.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "b", "kind": "attack", "author": "alice", "target": "a"}
+      ],
+      "expect": {
+        "c": {"strength": "3/8", "display": "0.3750", "counted": true},
+        "a": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "b": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "support-of-attacker",
+      "note": "s = 1/2, a = 3/4, c = 1/2 - 1/2*3/4 = 1/8.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "s", "kind": "support", "author": "carol", "target": "a"}
+      ],
+      "expect": {
+        "c": {"strength": "1/8", "display": "0.1250", "counted": true},
+        "a": {"strength": "3/4", "display": "0.7500", "counted": true},
+        "s": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "duplicate-attack-same-author",
+      "note": "bob attacks c twice; only a1 counts, so c = 1/4 as in one-attack. a2 is still an argument: carol attacks it, so a2 = 1/4, but it contributes nothing to c.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a1", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "a2", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "x", "kind": "attack", "author": "carol", "target": "a2"}
+      ],
+      "expect": {
+        "c": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "a1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a2": {"strength": "1/4", "display": "0.2500", "counted": false},
+        "x": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "same-author-attacks-and-supports",
+      "note": "Different kind, so both count: va = vs = 1/2, c = 1/2.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "s", "kind": "support", "author": "bob", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "s": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "two-authors-attacking",
+      "note": "Same log as duplicate-attack-same-author except a2 is by dave, so both count. a2 = 1/4 (attacked by x): F(1/2,1/4) = 1 - 1/2*3/4 = 5/8, c = 1/2 - 5/16 = 3/16.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a1", "kind": "attack", "author": "bob", "target": "c"},
+        {"id": "a2", "kind": "attack", "author": "dave", "target": "c"},
+        {"id": "x", "kind": "attack", "author": "carol", "target": "a2"}
+      ],
+      "expect": {
+        "c": {"strength": "3/16", "display": "0.1875", "counted": true},
+        "a1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a2": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "x": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "author-supports-own-claim",
+      "note": "Self-support by authorship is counted like any other (open question for the owner): c = 3/4.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "s", "kind": "support", "author": "alice", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "3/4", "display": "0.7500", "counted": true},
+        "s": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "rounding-tie-to-even-stays",
+      "note": "Four attackers: F = 15/16, c = 1/2 - 15/32 = 1/32 = 0.03125 exactly. Tie at the 5th place; 4th digit 2 is even, so 0.0312.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a1", "kind": "attack", "author": "u1", "target": "c"},
+        {"id": "a2", "kind": "attack", "author": "u2", "target": "c"},
+        {"id": "a3", "kind": "attack", "author": "u3", "target": "c"},
+        {"id": "a4", "kind": "attack", "author": "u4", "target": "c"}
+      ],
+      "expect": {
+        "c": {"strength": "1/32", "display": "0.0312", "counted": true},
+        "a1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a2": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a3": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a4": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "rounding-tie-to-even-moves",
+      "note": "Chain of five: e5 = 1/2, e4 = 1/4, e3 = 3/8, e2 = 5/16, e1 = 1/2 - 5/32 = 11/32 = 0.34375 exactly. Tie; 4th digit 7 is odd, so 0.3438.",
+      "entries": [
+        {"id": "e1", "kind": "claim", "author": "alice"},
+        {"id": "e2", "kind": "attack", "author": "bob", "target": "e1"},
+        {"id": "e3", "kind": "attack", "author": "alice", "target": "e2"},
+        {"id": "e4", "kind": "attack", "author": "bob", "target": "e3"},
+        {"id": "e5", "kind": "attack", "author": "alice", "target": "e4"}
+      ],
+      "expect": {
+        "e1": {"strength": "11/32", "display": "0.3438", "counted": true},
+        "e2": {"strength": "5/16", "display": "0.3125", "counted": true},
+        "e3": {"strength": "3/8", "display": "0.3750", "counted": true},
+        "e4": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "e5": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "rounding-non-tie-down",
+      "note": "Chain of six: e1 = 1/2 - 11/64 = 21/64 = 0.328125. Remainder 25 < 50, so 0.3281. e2 = 11/32 is the tie from the previous vector.",
+      "entries": [
+        {"id": "e1", "kind": "claim", "author": "alice"},
+        {"id": "e2", "kind": "attack", "author": "bob", "target": "e1"},
+        {"id": "e3", "kind": "attack", "author": "alice", "target": "e2"},
+        {"id": "e4", "kind": "attack", "author": "bob", "target": "e3"},
+        {"id": "e5", "kind": "attack", "author": "alice", "target": "e4"},
+        {"id": "e6", "kind": "attack", "author": "bob", "target": "e5"}
+      ],
+      "expect": {
+        "e1": {"strength": "21/64", "display": "0.3281", "counted": true},
+        "e2": {"strength": "11/32", "display": "0.3438", "counted": true},
+        "e3": {"strength": "5/16", "display": "0.3125", "counted": true},
+        "e4": {"strength": "3/8", "display": "0.3750", "counted": true},
+        "e5": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "e6": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "rounding-non-tie-up",
+      "note": "s has three attackers: F = 7/8, s = 1/2 - 7/16 = 1/16. c has five attackers (F = 31/32) and supporter s (F = 1/16 = 2/32): c = 1/2 - 1/2*29/32 = 3/64 = 0.046875. Remainder 75 > 50, so 0.0469.",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a1", "kind": "attack", "author": "u1", "target": "c"},
+        {"id": "a2", "kind": "attack", "author": "u2", "target": "c"},
+        {"id": "a3", "kind": "attack", "author": "u3", "target": "c"},
+        {"id": "a4", "kind": "attack", "author": "u4", "target": "c"},
+        {"id": "a5", "kind": "attack", "author": "u5", "target": "c"},
+        {"id": "s", "kind": "support", "author": "u6", "target": "c"},
+        {"id": "x1", "kind": "attack", "author": "u1", "target": "s"},
+        {"id": "x2", "kind": "attack", "author": "u2", "target": "s"},
+        {"id": "x3", "kind": "attack", "author": "u3", "target": "s"}
+      ],
+      "expect": {
+        "c": {"strength": "3/64", "display": "0.0469", "counted": true},
+        "a1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a2": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a3": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a4": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "a5": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "s": {"strength": "1/16", "display": "0.0625", "counted": true},
+        "x1": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "x2": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "x3": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    },
+    {
+      "name": "mixed-graph",
+      "note": "Two claims, a duplicate, an attack on the uncounted duplicate, reinstatement and supported support. See SEMANTICS.md for the arithmetic.",
+      "entries": [
+        {"id": "e1", "kind": "claim", "author": "alice"},
+        {"id": "e2", "kind": "claim", "author": "bob"},
+        {"id": "e3", "kind": "attack", "author": "bob", "target": "e1"},
+        {"id": "e4", "kind": "support", "author": "carol", "target": "e1"},
+        {"id": "e5", "kind": "attack", "author": "alice", "target": "e3"},
+        {"id": "e6", "kind": "attack", "author": "bob", "target": "e1"},
+        {"id": "e7", "kind": "support", "author": "dave", "target": "e4"},
+        {"id": "e8", "kind": "attack", "author": "carol", "target": "e6"},
+        {"id": "e9", "kind": "support", "author": "alice", "target": "e2"},
+        {"id": "e10", "kind": "attack", "author": "dave", "target": "e5"}
+      ],
+      "expect": {
+        "e1": {"strength": "11/16", "display": "0.6875", "counted": true},
+        "e2": {"strength": "3/4", "display": "0.7500", "counted": true},
+        "e3": {"strength": "3/8", "display": "0.3750", "counted": true},
+        "e4": {"strength": "3/4", "display": "0.7500", "counted": true},
+        "e5": {"strength": "1/4", "display": "0.2500", "counted": true},
+        "e6": {"strength": "1/4", "display": "0.2500", "counted": false},
+        "e7": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "e8": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "e9": {"strength": "1/2", "display": "0.5000", "counted": true},
+        "e10": {"strength": "1/2", "display": "0.5000", "counted": true}
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "forward-target",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "b"},
+        {"id": "b", "kind": "claim", "author": "carol"}
+      ],
+      "error": "target-not-earlier"
+    },
+    {
+      "name": "missing-target",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "attack", "author": "bob", "target": "nope"}
+      ],
+      "error": "target-missing"
+    },
+    {
+      "name": "self-target",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "a", "kind": "support", "author": "bob", "target": "a"}
+      ],
+      "error": "target-self"
+    },
+    {
+      "name": "duplicate-id",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "c", "kind": "claim", "author": "bob"}
+      ],
+      "error": "duplicate-id"
+    },
+    {
+      "name": "claim-with-target",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "d", "kind": "claim", "author": "bob", "target": "c"}
+      ],
+      "error": "claim-with-target"
+    },
+    {
+      "name": "support-without-target",
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"},
+        {"id": "s", "kind": "support", "author": "bob"}
+      ],
+      "error": "edge-without-target"
+    },
+    {
+      "name": "unknown-kind",
+      "entries": [
+        {"id": "c", "kind": "rebuttal", "author": "alice"}
+      ],
+      "error": "unknown-kind"
+    },
+    {
+      "name": "unknown-parameter-value-aggregation",
+      "params": {
+        "semantics": "df-quad",
+        "base_score": "1/2",
+        "aggregation": "max",
+        "influence": "df-quad-combination",
+        "arithmetic": "exact-rational",
+        "display": {"decimals": 4, "rounding": "half-even"},
+        "duplicates": "first-per-author-target-kind"
+      },
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"}
+      ],
+      "error": "unsupported-parameter"
+    },
+    {
+      "name": "unknown-parameter-value-rounding",
+      "params": {
+        "semantics": "df-quad",
+        "base_score": "1/2",
+        "aggregation": "probabilistic-sum",
+        "influence": "df-quad-combination",
+        "arithmetic": "exact-rational",
+        "display": {"decimals": 4, "rounding": "half-up"},
+        "duplicates": "first-per-author-target-kind"
+      },
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"}
+      ],
+      "error": "unsupported-parameter"
+    },
+    {
+      "name": "unknown-parameter-value-arithmetic",
+      "params": {
+        "semantics": "df-quad",
+        "base_score": "1/2",
+        "aggregation": "probabilistic-sum",
+        "influence": "df-quad-combination",
+        "arithmetic": "float64",
+        "display": {"decimals": 4, "rounding": "half-even"},
+        "duplicates": "first-per-author-target-kind"
+      },
+      "entries": [
+        {"id": "c", "kind": "claim", "author": "alice"}
+      ],
+      "error": "unsupported-parameter"
+    }
+  ]
+}

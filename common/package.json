@@ -4,6 +4,9 @@
   "private": true,
   "license": "Apache-2.0",
   "main": "src/index.ts",
+  "scripts": {
+    "test": "tsx --test test/dfquad.test.ts"
+  },
   "dependencies": {
     "signify-ts": "file:../vendor/signify-ts-0.3.0-rc1-62a646f.tgz"
   }
