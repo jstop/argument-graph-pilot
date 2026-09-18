@@ -1,0 +1,8 @@
+# Weekly, grouped, so drift shows up as one reviewable pull request per ecosystem.
+# NOT covered, on purpose: signify-ts (vendored at the wallet's exact commit) and the
+# Veridian images (pinned by digest in infra/): those move only when the wallet moves.
+version: 2
+updates:
+  - { package-ecosystem: github-actions, directory: "/", schedule: { interval: weekly }, groups: { actions: { patterns: ["*"] } } }
+  - { package-ecosystem: npm, directory: "/", schedule: { interval: weekly }, groups: { npm: { patterns: ["*"] } }, ignore: [{ dependency-name: "signify-ts" }] }
+  - { package-ecosystem: pip, directory: "/verifier", schedule: { interval: weekly }, groups: { pip: { patterns: ["*"] } } }

@@ -22,6 +22,9 @@ down:               ## stop everything, keep data
 wipe:               ## stop everything and DELETE all data (identifiers, keys, claims)
 	./infra/services.sh wipe; MODE=$(MODE) ./infra/stack.sh wipe
 
+check:              ## what CI's fast job runs: secret scan, types, vectors, recorded-log verifier
+	./ops/secret-scan.sh --history && npx tsc --noEmit -p . && npm test -w common && (cd verifier && python -m pytest -q)
+
 help:
 	@grep -E '^[a-z]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/  —/'
-.PHONY: install stack services test schema down wipe help
+.PHONY: check install stack services test schema down wipe help
