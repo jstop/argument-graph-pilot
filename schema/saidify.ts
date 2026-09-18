@@ -16,7 +16,7 @@ const here = __dirname;
 async function main() {
   await ready();
   const schema = JSON.parse(
-    readFileSync(join(here, "foundational-credential.source.json"), "utf8")
+    readFileSync(join(here, "community-membership.source.json"), "utf8")
   );
 
   const attrs = schema.properties.a.oneOf[1];
