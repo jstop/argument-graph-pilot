@@ -53,8 +53,53 @@ def _episteme_modules(memory_dir: Path):
     return substrate, engine
 
 
+@dataclass
+class Snapshot:
+    """The library as read: the ideas, where the read stopped, and enough of the raw state to show a derivation."""
+    ideas: list
+    head_sequence: int
+    head_hash: str | None
+    db: str
+    beliefs: dict
+    evidence: dict
+    stamped: dict
+
+    def detail(self, idea_id: str) -> dict:
+        """Everything the library holds that produced this idea's stance, for the trace."""
+        b, s = self.beliefs[idea_id], self.stamped[idea_id]
+        by_id = {i.id: i for i in self.ideas}
+        return {
+            "stance": s["stance"], "guidance": s["guidance"], "method": s["method"], "volatility": s["volatility"],
+            "freshness": s["freshness"], "age_days": s["age_days"], "degraded_reason": s["degraded_reason"],
+            "authorship": s["authorship"], "anchor": s.get("anchor"),
+            "claim_history": [{"at": h["at"][:10], "origin": h["origin"], "actor": h.get("actor"), "claim": h["claim"]} for h in b.get("claim_history", [])],
+            "premises": [{"id": p, "stance": by_id[p].stance if p in by_id else "retired/unknown", "claim": by_id[p].claim if p in by_id else ""} for p in by_id[idea_id].premises],
+            "dependents": sorted(i.id for i in self.ideas if idea_id in _closure(i.id, {x.id: x.premises for x in self.ideas})),
+            "evidence": [{"id": e, "uri": self.evidence.get(e, {}).get("uri"), "media_type": self.evidence.get(e, {}).get("media_type"),
+                          "durability": self.evidence.get(e, {}).get("durability"), "recorded_by": self.evidence.get(e, {}).get("actor"),
+                          "author": (self.evidence.get(e, {}).get("metadata") or {}).get("author")} for e in b.get("evidence_ids") or []],
+            "grounding": [{"evidence_id": g.get("evidence_id"), "quote": g.get("quote")} for g in b.get("grounding") or []],
+        }
+
+
+def _closure(start: str, rests_on: dict) -> set:
+    seen, stack = set(), [start]
+    while stack:
+        for p in rests_on.get(stack.pop(), ()):
+            if p not in seen:
+                seen.add(p)
+                stack.append(p)
+    return seen
+
+
 def load(root: str | os.PathLike | None = None, branch: str = "main", db_path: str | os.PathLike | None = None,
          today: dt.date | None = None) -> list[Idea]:
+    return snapshot(root, branch, db_path, today).ideas
+
+
+def snapshot(root: str | os.PathLike | None = None, branch: str = "main", db_path: str | os.PathLike | None = None,
+             today: dt.date | None = None, as_of: int | None = None) -> Snapshot:
+    """as_of: replay the library only up to that event sequence number (it is append-only, so the past is still there)."""
     root = Path(root or os.environ.get("EPISTEMIC_ROOT") or Path.home() / "workspace" / "epistemic")
     substrate, engine = _episteme_modules(root / "memory")
     db = Path(db_path) if db_path else (root / "data" / "canonical.db" if branch == "main" else root / "data" / "builds" / branch / "canonical.db")
@@ -68,9 +113,15 @@ def load(root: str | os.PathLike | None = None, branch: str = "main", db_path: s
     log.conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True, check_same_thread=False)
     log.conn.row_factory = sqlite3.Row
     try:
+        events = log.events()
+        if as_of is not None:
+            events = [e for e in events if e["sequence"] <= as_of]
+        log.events = lambda: events          # Episteme's own state() folds whatever events() returns
         state = log.state()
     finally:
         log.conn.close()
+    head_sequence = events[-1]["sequence"] if events else 0
+    head_hash = events[-1]["event_hash"] if events else None
 
     rels = state["relationships"]
     views = {bid: engine._view(bid, b, rels) for bid, b in state["beliefs"].items()}
@@ -103,12 +154,13 @@ def load(root: str | os.PathLike | None = None, branch: str = "main", db_path: s
         seen.discard(bid)
         return len(seen)
 
-    ideas = []
+    ideas, stamped = [], {}
     for bid, v in views.items():
         if v["retired"]:
             continue
         v = dict(v, authorship=state["beliefs"][bid].get("authorship") or {})
         s = engine.stamped(v, ref=ref, by_id=views)
+        stamped[bid] = s
         ideas.append(Idea(
             id=bid, claim=s["claim"], stance=s["stance"], method=s["method"], cluster=s["cluster"],
             freshness=s["freshness"], age_days=s["age_days"], contested=s["contested"],
@@ -117,4 +169,5 @@ def load(root: str | os.PathLike | None = None, branch: str = "main", db_path: s
             unsupported=bool(s["unsupported"] or s["verification_failed"]),
             premises=sorted(p for p in rests_on[bid] if p in views), dependents=dependents(bid),
             contradicted_by=sorted(set(contradicted[bid]))))
-    return sorted(ideas, key=lambda i: i.id)
+    return Snapshot(ideas=sorted(ideas, key=lambda i: i.id), head_sequence=head_sequence, head_hash=head_hash, db=str(db),
+                    beliefs=state["beliefs"], evidence=state["evidence"], stamped=stamped)

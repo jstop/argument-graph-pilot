@@ -12,7 +12,7 @@ import json
 import os
 from pathlib import Path
 
-EVENTS = {"Linked", "Unlinked", "Compared", "Responded", "CommunityPulled"}
+EVENTS = {"Linked", "Unlinked", "Compared", "Responded", "CommunityPulled", "PipelineAdopted", "ListProduced"}
 RESPONSES = {"engaged", "snoozed", "dismissed"}
 RELATIONS = {"same", "opposes"}   # the community entry says what I hold / says the opposite
 
@@ -55,14 +55,15 @@ class FocusLog:
         return ev
 
     # ---- replay ---------------------------------------------------------
-    def state(self) -> dict:
+    def state(self, upto: int | None = None) -> dict:
+        """upto: replay only the first `upto` events (what focus knew at that point)."""
         links: dict[tuple, dict] = {}        # (idea, entry) -> {relation, at}
         wins: dict[str, int] = {}
         losses: dict[str, int] = {}
         last: dict[str, dict] = {}           # item key -> last response {response, at, until, head_n}
         dismissed: dict[str, int] = {}
-        pulls = []
-        for ev in self.events:
+        pulls, pipelines, lists = [], [], []
+        for index, ev in enumerate(self.events if upto is None else self.events[:upto]):
             d, t = ev["data"], ev["type"]
             if t == "Linked":
                 links[(d["idea"], d["entry"])] = {"relation": d["relation"], "at": ev["at"]}
@@ -77,4 +78,9 @@ class FocusLog:
                     dismissed[d["item"]] = dismissed.get(d["item"], 0) + 1
             elif t == "CommunityPulled":
                 pulls.append(dict(d, at=ev["at"]))
-        return {"links": links, "wins": wins, "losses": losses, "last": last, "dismissed": dismissed, "pulls": pulls}
+            elif t == "PipelineAdopted":
+                pipelines.append(dict(d, at=ev["at"]))
+            elif t == "ListProduced":
+                lists.append(dict(d, at=ev["at"], index=index, hash=ev["hash"]))
+        return {"links": links, "wins": wins, "losses": losses, "last": last, "dismissed": dismissed, "pulls": pulls,
+                "pipelines": pipelines, "lists": lists}

@@ -31,6 +31,7 @@ class Entry:
     strength: Fraction | None
     display: str | None
     counted: bool | None
+    checks: list = None          # the verifier's per-entry checks: [(name, ok, detail)]
 
 
 @dataclass
@@ -62,7 +63,7 @@ def verify_export(bundle: dict, issuer: str, url: str | None = None) -> Communit
         p, s = payloads.get(e.said, {}), rep.strengths.get(e.said)
         entries.append(Entry(said=e.said, n=e.n, kind=e.kind, text=str(p.get("text", "")), handle=e.handle or "?", author=e.author or "?",
                              target=p.get("target"), ok=e.ok, strength=Fraction(s["strength"]) if s else None,
-                             display=s["display"] if s else None, counted=s["counted"] if s else None))
+                             display=s["display"] if s else None, counted=s["counted"] if s else None, checks=list(e.checks)))
     log = bundle.get("log") or [{}]
     problems = [f"{name}: {detail}" for name, ok, detail in rep.log_checks if not ok] + \
                [f"entry {e.n} failed '{e.failed}'" for e in rep.entries if not e.ok]

@@ -32,6 +32,23 @@ python -m focus engage <idea>       python -m focus snooze <idea> 30
 python -m focus dismiss <idea>      python -m focus over <ideaA> <ideaB>
 ```
 
+## Zoom in, look back, try changes
+
+```
+python -m focus why <idea>          # everything behind one item: the arithmetic, EVERY rule (fired or not, on
+                                    # what inputs, and why not), what your library holds behind it (evidence,
+                                    # authorship, premises), what the verifier found about each linked entry
+python -m focus pipeline > my.json  # the rules' numbers, as a file. Edit it. A typo is refused; 0 turns a rule off
+python -m focus try my.json         # today's list under your rules vs the active ones, and which rule moved what
+python -m focus replay my.json      # your rules over every list ever shown, against what you then did
+python -m focus adopt my.json why   # make it active; recorded with its full text
+python -m focus history             # every list shown and what it was computed from
+python -m focus audit               # recompute each of them from those coordinates; says if one no longer reproduces
+```
+
+The page has the same: "how this got here" on every item, `/pipeline`,
+`/history`.
+
 `--branch dev` reads Episteme's dev build. Tests: `python -m pytest -q`
 (a temporary Episteme library built with Episteme's own code, and the
 community log recorded from the live stack; skipped, saying so, if

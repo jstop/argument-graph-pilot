@@ -247,12 +247,45 @@ hand. The owner should decide whether the non-goal stands as written.
 - **Privacy.** Your ideas are printed to your terminal or served on
   127.0.0.1. The only thing that leaves is text you yourself post and
   sign. `personal/` is not deployed to the cloud box.
+- **Zoom in (`focus why KEY`, page `/why`).** Every rule leaves a record
+  for every idea whether it fired or not, with the inputs it looked at
+  and, if not, why not (tested: no rule may be missing from a trace).
+  The trace then goes down: the weight's arithmetic; what the library
+  holds behind the idea (stance and Episteme's reason for it, who wrote
+  and who stands behind the wording, premises with their stances, what
+  rests on it, evidence with author and recorder, grounding quotes);
+  for each linked community entry, the verifier's own five checks and
+  the responses to it; and what you did with the item before.
+- **The pipeline is declared, not coded** (`focus pipeline`): weights,
+  points, thresholds, budget, as JSON identified by its SHA-256. Unknown
+  keys are refused; a rule at 0 is off and says so in traces. The active
+  pipeline is the last `PipelineAdopted` event, which carries the full
+  text. The rules' *logic* is still Python; only their numbers are data.
+- **Every list shown is recorded with its coordinates**: pipeline
+  digest, library position (event sequence and hash), community export
+  digest, date, result. Identical consecutive lists are recorded once.
+  `focus audit` (page `/history`) recomputes every recorded list from
+  those coordinates: the library is append-only so it is replayed *as
+  of* that sequence, exports are kept by digest, the focus log is
+  replayed up to the list's own position. A list that no longer
+  reproduces means something rewrote its past (tested across the
+  library growing and a pipeline change). Limit: Episteme's stance code
+  is whatever is installed today, so a change to *its* rules shows up as
+  lists that stop reproducing, without saying which rule.
+- **Testing a change** (`focus try`, `focus replay`): `try` shows
+  today's list under the candidate next to the active one, with which
+  rule moved each item. `replay` runs the candidate over every recorded
+  list and tallies it against what you did next: does it keep showing
+  what you engaged with and stop showing what you dismissed. That is a
+  small, biased sample (you only responded to what the old rules showed
+  you) and the tool says so. Nothing tunes itself.
 - **Not built:** maturity (exploring/developing/settled) as its own
   axis, since Episteme has no such field (HYPOTHESIS is the nearest);
   writing anything back into Episteme (e.g. a community entry as
   evidence, a record that you published a belief); workbench argument
   graphs as a source of weight; any automatic matching of ideas to
-  entries; tuning of weights from your responses beyond dismissal.
+  entries; the content of evidence in the trace (it shows identity,
+  author and grounding quotes, not the document).
 
 ## Where Veridian's stack decided for us
 

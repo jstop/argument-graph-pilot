@@ -4,7 +4,9 @@ import html
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 
-from . import library, score
+from urllib.parse import quote, urlparse
+
+from . import audit as au, pipeline as pl, trace
 
 STYLE = """
 :root{color-scheme:light dark;--line:#8886;--bad:#b3261e;--ok:#1a7f37}
@@ -30,7 +32,7 @@ def page(items, comm) -> str:
                           f'<button name="response" value="{v}">{label}</button></form> '
                           for v, label in (("engaged", "I looked at it"), ("snoozed", "Not now (14 days)"), ("dismissed", "Not important")))
         return (f'<div class="item"><span class="score" title="weight {it.weight} × signals">{it.score:g}</span><h2>{esc(it.title)}</h2>'
-                f'<div class="sub">{esc(it.detail)} · weight {it.weight:g}</div>'
+                f'<div class="sub">{esc(it.detail)} · weight {it.weight:g} · <a href="/why?key={quote(it.key)}">how this got here</a></div>'
                 f'<ul>{"".join(f"<li>{esc(why)} <small>+{p:g}</small></li>" for p, why in it.reasons)}</ul>'
                 f'<div class="sub">What you could do</div><ul>{"".join(move(l, t) for l, t in it.moves if not t.startswith("focus "))}</ul>{buttons}</div>')
 
@@ -42,20 +44,55 @@ def page(items, comm) -> str:
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>Focus</title><style>{STYLE}</style></head><body><h1>What deserves your attention</h1>'
             f'<p class="sub">From your own library and the community log. Each item says why it is here; the number is weight × the points shown. '
-            f'This page is served on this machine only.</p>{head}'
+            f'This page is served on this machine only. <a href="/pipeline">the rules and numbers</a> · <a href="/history">every list shown, and whether it still reproduces</a></p>{head}'
             f'{"".join(item(i) for i in items) or "<p>Nothing is pressing. Go learn something new.</p>"}</body></html>')
 
 
+def why_page(t) -> str:
+    rules = "".join(f'<tr class="{"on" if s["fired"] else "off"}"><td>{"●" if s["fired"] else "○"}</td><td class="mono">{esc(s["rule"])}</td><td>{("+" + format(s["points"], "g")) if s["fired"] else ""}</td>'
+                    f'<td>{esc(s["text"])}<div class="sub">rule: {esc(s["what"])}</div>'
+                    + (f'<div class="sub mono">looked at: {esc(", ".join(f"{k}={v}" for k, v in s["inputs"].items()))}</div>' if s["inputs"] else "") + "</td></tr>" for s in t["signals"])
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>How this got here</title>'
+            f'<style>{STYLE} table{{border-collapse:collapse;width:100%}} td{{padding:.3rem .5rem;vertical-align:top;border-bottom:1px solid var(--line)}} tr.off{{opacity:.55}} pre{{white-space:pre-wrap;overflow-wrap:anywhere}}</style></head><body>'
+            f'<p class="sub"><a href="/">← the list</a></p><h1>{esc(t["title"])}</h1><p class="sub">{esc(t["detail"])}</p>'
+            f'<h2>Every rule, fired or not</h2><table>{rules}</table>'
+            f'<h2>The whole derivation</h2><pre class="mono">{esc(trace.text(t))}</pre></body></html>')
+
+
+def simple_page(title, body) -> str:
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{esc(title)}</title><style>{STYLE} pre{{white-space:pre-wrap;overflow-wrap:anywhere}}</style></head>'
+            f'<body><p class="sub"><a href="/">← the list</a></p><h1>{esc(title)}</h1>{body}</body></html>')
+
+
 def serve(args, log) -> int:
-    from .__main__ import current
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *a):  # quiet
             pass
 
         def do_GET(self):
-            ideas, st, comm = current(args, log)
-            body = page(score.focus(ideas, st, comm, budget=args.budget), comm).encode("utf-8")
+            url = urlparse(self.path)
+            if url.path == "/why":
+                top, everything, snap, comm, p = au.produce(args, log, record=False)
+                try:
+                    out = why_page(trace.build(parse_qs(url.query).get("key", [""])[0], everything, top, snap, comm, log.state(), p, log))
+                except LookupError as ex:
+                    out = simple_page("Not found", f"<p>{esc(ex)}</p>")
+            elif url.path == "/pipeline":
+                p = pl.active(log.state())
+                rules = "".join(f"<li><span class='mono'>{esc(k)}</span> = {v:g}: {esc(pl.WHAT.get(k, ''))}</li>" for k, v in p["signals"].items())
+                out = simple_page("The rules and numbers", f"<p class='sub'>score = weight × the points of the rules that fired. Pipeline <span class='mono'>{pl.digest(p)[:16]}…</span>. "
+                                  f"Edit a copy and test it before adopting: <span class='mono'>python -m focus pipeline &gt; my.json; python -m focus try my.json; python -m focus replay my.json; python -m focus adopt my.json</span></p>"
+                                  f"<ul>{rules}</ul><pre class='mono'>{esc(__import__('json').dumps(p, indent=2))}</pre>")
+            elif url.path == "/history":
+                rows = "".join(f"<div class='item'><div class='sub'>{esc(r['at'][:16])} · pipeline <span class='mono'>{esc(r['pipeline'])}…</span> · library at event {r['library_sequence']} · "
+                               + ("<b>reproduces</b>" if r["reproduces"] else f"<b class='warn'>does not reproduce</b> {esc(r.get('error', ''))}") + "</div><ol>"
+                               + "".join(f"<li><a href='/why?key={quote(k)}'>{esc(k)}</a> <small>{sc:g}</small></li>" for k, sc in r.get("recorded", [])) + "</ol></div>" for r in reversed(au.audit(args, log)))
+                out = simple_page("Every list shown", "<p class='sub'>Each list is recomputed now from the coordinates recorded with it (pipeline, library position, community export, date).</p>" + (rows or "<p>None yet.</p>"))
+            else:
+                top, _, _, comm, _ = au.produce(args, log)
+                out = page(top, comm)
+            body = out.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()

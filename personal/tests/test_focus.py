@@ -145,3 +145,83 @@ def test_focus_log_refuses_to_build_on_a_broken_chain(tmp_path):
     p.write_text(p.read_text(encoding="utf-8").replace('"under": "b"', '"under": "z"'), encoding="utf-8")
     with pytest.raises(RuntimeError, match="does not chain"):
         FocusLog(tmp_path / "f")
+
+
+# ---- zooming in, looking back, trying changes ---------------------------------------------------
+
+from types import SimpleNamespace                                  # noqa: E402
+
+from focus import audit as au, pipeline as pl, trace               # noqa: E402
+
+
+def setup(lib, tmp_path, recorded):
+    """A focus log that has pulled the recorded community export, and args pointing at the temp library."""
+    bundle, comm = recorded
+    log = FocusLog(tmp_path / "f")
+    raw = json.dumps(bundle).encode("utf-8")
+    digest = hashlib.sha256(raw).hexdigest()
+    (log.dir / "exports").mkdir(parents=True, exist_ok=True)
+    (log.dir / "exports" / f"{digest}.json").write_bytes(raw)
+    log.append("CommunityPulled", {"url": "https://log.example", "issuer": bundle["log"][0]["payload"]["issuer"], "digest": digest, "head_n": comm.head_n, "head": comm.head, "verified": True})
+    return log, SimpleNamespace(root=ROOT, branch="main", db_path=lib, budget=None), comm
+
+
+def test_the_trace_shows_every_rule_with_its_inputs_including_the_ones_that_did_not_fire(lib, tmp_path, recorded):
+    log, args, comm = setup(lib, tmp_path, recorded)
+    claim = next(e for e in comm.entries if e.kind == "claim")
+    log.append("Linked", {"idea": "water-safe", "entry": claim.said, "relation": "same"})
+    top, everything, snap, c, p = au.produce(args, log, now=NOW)
+    t = trace.build("idea:water-safe", everything, top, snap, c, log.state(), p, log)
+    rules = {s["rule"]: s for s in t["signals"]}
+    assert set(pl.DEFAULT["signals"]) - {"outside_base", "outside_per_response"} <= set(rules)      # every idea-rule is accounted for
+    assert rules["community_attack"]["fired"] and rules["community_attack"]["inputs"]["you_last_looked_at_log_position"] == 0
+    assert not rules["low_standing"]["fired"] and "not below 1/3" in rules["low_standing"]["text"]
+    assert rules["low_standing"]["inputs"]["community_standing"] == "1/2"
+    assert t["score"] == round(t["weight"] * sum(s["points"] for s in t["signals"] if s["fired"]), 3)
+    assert [w for w, _ in t["weight_steps"]][1].endswith("log2(1 + 2 ideas that rest on it)")
+    # down to the library: evidence, its author, who wrote the claim; and down to the verifier's checks on the entry
+    assert t["library"]["evidence"][0]["author"] == "utility" and t["library"]["authorship"]["stood_behind_by"] == "owner"
+    assert sorted(t["library"]["dependents"]) == ["boil-advice", "filter-choice"]
+    assert [name for name, ok, _ in t["community"][0]["checks"] if ok] == ["record", "signature", "membership", "standing", "target"]
+    out = trace.text(t)
+    assert "RULES (every one, fired or not)" in out and "bob attacked it" in out and "threshold 4" in out
+
+
+def test_a_pipeline_with_a_typo_is_refused_and_a_rule_set_to_zero_is_off(lib, tmp_path):
+    bad = json.loads(json.dumps(pl.DEFAULT)); bad["signals"]["suspekt"] = 1
+    with pytest.raises(ValueError, match="suspekt"):
+        pl.validate(bad)
+    off = json.loads(json.dumps(pl.DEFAULT)); off["signals"]["suspect"] = 0
+    assert score.focus(ideas_of(lib), FocusLog(tmp_path / "f").state(), None, now=NOW, p=pl.validate(off)) == []
+
+
+def test_lists_are_recorded_with_their_coordinates_and_still_reproduce_after_the_library_moves_on(lib, tmp_path, recorded):
+    log, args, comm = setup(lib, tmp_path, recorded)
+    au.produce(args, log, now=NOW)
+    au.produce(args, log, now=NOW)                                  # same inputs, same list: not recorded twice
+    lists = log.state()["lists"]
+    assert len(lists) == 1 and lists[0]["pipeline"] == pl.digest(pl.DEFAULT) and lists[0]["library_hash"].startswith("sha256:")
+
+    import substrate                                                # the library grows: a new heavy SUSPECT idea
+    w = substrate.CanonicalLog(lib, lib.parent / "evidence_store", actor="agent:test-writer")
+    w.form_belief(belief_id="new-worry", claim="The meter reads high.", method="asserted", volatility="historical", cluster="water", unsupported=True, observed_at="2026-09-10")
+    w.close()
+    au.produce(args, log, now=NOW)
+    assert len(log.state()["lists"]) == 2 and log.state()["lists"][1]["list"] != lists[0]["list"]
+    rows = au.audit(args, log)
+    assert [r["reproduces"] for r in rows] == [True, True]          # the first list is rebuilt from the library AS OF its sequence
+
+
+def test_replaying_a_candidate_pipeline_over_your_own_history(lib, tmp_path, recorded):
+    log, args, comm = setup(lib, tmp_path, recorded)
+    au.produce(args, log, now=NOW)                                  # shows pipes-old (SUSPECT) and the community claim
+    log.append("Responded", {"item": "idea:pipes-old", "response": "dismissed", "head_n": comm.head_n})
+    cand = json.loads(json.dumps(pl.DEFAULT)); cand["signals"]["suspect"] = 0; cand["signals"]["unreviewed"] = 0
+    r = au.replay(args, log, pl.validate(cand))
+    assert r["tally"]["dismissed"] == [1, 1, 0]                     # you dismissed it; the old rules showed it; the candidate would not have
+    assert r["lists"][0]["left"] == ["idea:pipes-old"]
+    # adopting is an event carrying the full text, so later lists name it and old ones still name the default
+    log.append("PipelineAdopted", {"digest": pl.digest(cand), "pipeline": cand, "note": "stop nagging about suspects"})
+    au.produce(args, log, now=NOW)
+    assert [l["pipeline"] for l in log.state()["lists"]] == [pl.digest(pl.DEFAULT), pl.digest(cand)]
+    assert all(row["reproduces"] for row in au.audit(args, log))
