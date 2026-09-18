@@ -1,0 +1,16 @@
+# the base and the idea sources sit beside the code while we work; not part of this repo
+/demo2/
+/locus-client-zero/
+/locus-client-zero.zip
+node_modules/
+dist/
+.env
+data/
+*.sqlite
+.DS_Store
+__pycache__/
+.venv/
+*.pyc
+# never commit these (demo2 tracked one by accident)
+recovery_phrase*.txt
+*.bran
