@@ -169,6 +169,15 @@ the log did **not shrink** and the previous head is still in it. Any
 failure → the previous image is put back. It never touches volumes,
 `services.env`, KERIA or the witnesses.
 
+**Exercised 2026-09-19.** First pull deploy: cron saw the tag within a
+minute and checked the commit out, then `deploy-remote.sh` died in its
+first lines on a bash quoting bug (`${x:-{}}`), before building
+anything; the site was untouched and the workflow timed out as designed.
+Fixed; CI now shellchecks every script and runs `deploy-remote.sh`
+against the runner's stack on every main build. Second deploy: all four
+workflow steps green; same issuer identifier, same log head (#3) before
+and after; `/healthz` reports the deployed commit.
+
 **Stop all automatic deploys:** `crontab -r` on the box (or delete the
 `production` tag). **Deploy by hand instead:** on the box, `cd ~/arglog
 && git fetch && git checkout <sha> && ./ops/deploy-remote.sh`.
