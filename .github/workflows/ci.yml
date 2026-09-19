@@ -22,6 +22,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with: { fetch-depth: 0 }          # the secret scan reads history
       - run: ./ops/secret-scan.sh --history
+      - run: shellcheck -S warning ops/*.sh ops/box/*.sh infra/stack.sh infra/services.sh
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 20, cache: npm }
       - run: npm ci
@@ -63,5 +64,12 @@ jobs:
       - run: npm test -w issuer
       - run: npm test -w relying-party
         env: { VERIFIER_PYTHON: python }
+      - name: the deploy script itself, against this runner's stack (first start, then a redeploy over a live log)
+        run: |
+          cp infra/services.env.example infra/services.env
+          sed -i "s|^OPERATOR_TOKEN=.*|OPERATOR_TOKEN=$(openssl rand -hex 16)|" infra/services.env
+          ./infra/services.sh up
+          ./ops/deploy-remote.sh
+          curl -sf http://127.0.0.1:3120/healthz | jq -e --arg c "$GITHUB_SHA" '.ok == true and .commit == $c'
       - if: failure()
         run: docker ps -a; docker logs --tail 80 veridian-prod-keria-1 || true

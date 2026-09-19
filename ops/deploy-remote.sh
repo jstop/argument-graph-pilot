@@ -16,7 +16,8 @@ issuer_aid() { curl -sf -m 10 http://127.0.0.1:3110/healthz | jq -r '.issuer // 
 head_json()  { curl -sf -m 10 http://127.0.0.1:3120/log/head; }
 
 before_aid="$(issuer_aid || true)"; before_head="$(head_json || true)"
-before_n="$(echo "${before_head:-{}}" | jq -r '.n // -1')"; before_d="$(echo "${before_head:-{}}" | jq -r '.d // empty')"
+[ -n "$before_head" ] || before_head='{}'     # NOT ${before_head:-{}}: bash ends that expansion at the first } and appends the second
+before_n="$(echo "$before_head" | jq -r '.n // -1')"; before_d="$(echo "$before_head" | jq -r '.d // empty')"
 echo "deploy: commit $(git rev-parse --short HEAD); before: issuer=${before_aid:-none} log head #$before_n"
 
 docker image inspect "$IMAGE" >/dev/null 2>&1 && docker tag "$IMAGE" arglog-pilot:previous
