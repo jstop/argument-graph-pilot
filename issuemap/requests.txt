@@ -1,0 +1,4 @@
+# One public GitHub issue or PR URL per line. Pushing a change here fetches
+# every comment into issuemap/data/ as JSON.
+https://github.com/rust-lang/rust/issues/57640
+https://github.com/rust-lang/rust/issues/50547

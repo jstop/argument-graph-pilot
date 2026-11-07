@@ -1,0 +1,32 @@
+name: issuemap fetch
+on:
+  push:
+    branches: [issuemap-data]
+    paths: [issuemap/requests.txt, .github/workflows/issuemap-fetch.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch issue threads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p issuemap/data
+          grep -v '^#' issuemap/requests.txt | grep -E 'github\.com' | while read -r url; do
+            path=$(echo "$url" | sed -E 's#https://github.com/([^/]+)/([^/]+)/(issues|pull)/([0-9]+).*#\1/\2/issues/\4#')
+            name=$(echo "$path" | tr '/' '_')
+            gh api "repos/$path" > "issuemap/data/${name}.issue.json"
+            gh api --paginate "repos/$path/comments?per_page=100" | jq -s 'add' > "issuemap/data/${name}.comments.json"
+            echo "$url -> $(jq length issuemap/data/${name}.comments.json) comments"
+          done
+      - name: Commit data
+        run: |
+          git config user.name "issuemap-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add issuemap/data
+          git diff --cached --quiet || git commit -m "issuemap: fetched threads"
+          git push
