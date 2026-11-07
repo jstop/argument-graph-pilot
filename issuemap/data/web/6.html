@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>rust-lang/rust is adopting an LLM policy | Inside Rust Blog</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Empowering everyone to build reliable and efficient software.">
+     <!-- Twitter card -->
+     <meta name="twitter:card" content="summary">
+     <meta name="twitter:site" content="@rustlang">
+     <meta name="twitter:creator" content="@rustlang">
+     <meta name="twitter:title" content="rust-lang/rust is adopting an LLM policy | Inside Rust Blog">
+     <meta name="twitter:description" content="Want to follow along with Rust development? Curious how you might get involved? Take a look!">
+    <meta name="twitter:image" content="https://www.rust-lang.org/static/images/rust-social.jpg">
+    
+    <!-- Facebook OpenGraph -->
+    <meta property="og:title" content="rust-lang/rust is adopting an LLM policy | Inside Rust Blog" />
+    <meta property="og:description" content="Want to follow along with Rust development? Curious how you might get involved? Take a look!">
+    <meta property="og:image" content="https://www.rust-lang.org/static/images/rust-social-wide.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- styles -->
+    <link rel="stylesheet" href="https://blog.rust-lang.org/styles/skeleton.css"/>
+    <link rel="stylesheet" href="https://blog.rust-lang.org/styles/tachyons.css"/>
+    <link rel="stylesheet" href="https://blog.rust-lang.org/styles/fonts.css"/>
+    <link rel="stylesheet" href="https://blog.rust-lang.org/styles/app.css"/>
+    <link rel="stylesheet" type="text/css" id="syntax-theme" />
+    
+    <!-- stylesheet for user agents without js -->
+    <noscript>
+        <link rel="stylesheet" href="https://blog.rust-lang.org/styles/noscript.css">
+        <link rel="stylesheet" type="text/css" href="/giallo-dark.css" media="(prefers-color-scheme: dark)" />
+        <link rel="stylesheet" type="text/css" href="/giallo-light.css" media="(prefers-color-scheme: light)" />
+    </noscript>
+    
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://blog.rust-lang.org/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://blog.rust-lang.org/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://blog.rust-lang.org/images/favicon-32x32.png">
+    <link rel="icon" type="image/svg+xml" href="https://blog.rust-lang.org/images/favicon.svg">
+    <link rel="manifest" href="https://blog.rust-lang.org/images/site.webmanifest">
+    <link rel="mask-icon" href="https://blog.rust-lang.org/images/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+     <!-- atom -->
+     <link type="application/atom+xml" rel="alternate" href="https://blog.rust-lang.org/inside-rust/feed.xml" title="Inside Rust Blog" />
+    
+    <!-- theme switcher -->
+    <script src="https://blog.rust-lang.org/scripts/theme-switch.js"></script>
+  </head>
+  <body>
+    <nav class="flex flex-row justify-center justify-end-l items-center flex-wrap ph2 pl3-ns pr4-ns">
+      <div class="brand flex-auto w-100 w-auto-l self-start tc tl-l">
+        <a href="https://blog.rust-lang.org/inside-rust/">
+          <img class="v-mid ml0-l rust-logo" alt="" src="https://blog.rust-lang.org/images/rust-logo-blk.svg">
+          <span class="dib ml1 ml0-l">Inside Rust Blog</span>
+        </a>
+      </div>
+    
+      <ul class="nav list w-100 w-auto-l flex flex-none flex-row flex-wrap justify-center justify-end-l items-center pv2 ph0 ph4-ns">
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org">Rust</a></li>
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org/tools/install">Install</a></li>
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org/learn">Learn</a></li>
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org/tools">Tools</a></li>
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org/governance">Governance</a></li>
+        <li class="tc pv2 ph2 ph4-ns flex-20-s"><a href="https://www.rust-lang.org/community">Community</a></li>
+        <button class="theme-icon" onclick="dropdown();">🖌
+          <ul id="theme-choice">
+            <li class="theme-item" onclick="changeThemeTo('light');">Light</li>
+            <li class="theme-item" onclick="changeThemeTo('dark');">Dark</li>
+            <li class="theme-item" onclick="changeThemeTo('system');">System</li>
+          </ul>
+        </button>
+        <script src="https://blog.rust-lang.org/scripts/theme-switch-post.js"></script>
+      </ul>
+    </nav><section id="rust-lang/rust is adopting an LLM policy" class="white">
+  <div class="w-100 mw-none ph3 mw8-m mw8-l center f3">
+    <header>
+      <h2>rust-lang/rust is adopting an LLM policy</h2>
+      <div class="highlight mt2 mb3"></div>
+    </header>
+
+    <div class="publish-date-author">Aug. 5, 2026 &middot; Jynn Nelson
+    
+    </div>
+
+    <div class="post">
+      <p>Recently, <a rel="external" href="https://triagebot.infra.rust-lang.org/gh-comments/rust-lang/rust-forge/pull/1040#issuecomment-4438128685">five teams in the Rust project</a> adopted a <a rel="external" href="https://forge.rust-lang.org/policies/llm-usage.html">policy</a> that I originally authored,
+governing how <a rel="external" href="https://en.wikipedia.org/wiki/Large_language_model">Large Language Models</a> can be used when contributing to the <code>rust-lang/rust</code> monorepo.
+Notably, the new policy is <em>not</em> an official stance on LLMs, and does <em>not</em> apply everywhere in the Rust project.
+I wrote it for a very specific purpose, described below.</p>
+<p>This post talks about why we created that policy, what it says, and how this will affect contributors.</p>
+<p>The policy affects the following groups of people:</p>
+<ul>
+<li>People who review or moderate PRs on <code>rust-lang/rust</code>.</li>
+<li>People who author PRs with LLM-generated code on <code>rust-lang/rust</code>.</li>
+<li>People who discover issues using LLMs and post them on <code>rust-lang/rust</code>.</li>
+<li>People who write issues or comments that directly quote an LLM on <code>rust-lang/rust</code>.</li>
+</ul>
+<p>If you are not in one of those groups, you don't have to change anything about how you work.</p>
+<h2 id="why-was-this-policy-created"><a class="anchor" href="#why-was-this-policy-created" aria-hidden="true"></a>
+Why was this policy created?</h2>
+<p>While the Rust project is a collection of technical artifacts,
+it is also a <em>community</em> of people who work together to build, maintain, and extend those artifacts.
+When we talk about "contributing to the Rust project", we partly mean work on those artifacts,
+but we also mean joining that community and collaborating with the people already there.</p>
+<p>Even before this policy was created, people were using LLMs to contribute to <code>rust-lang/rust</code>.
+Some of those uses respected our community:
+translating messages to English so people could draft them in their native language;
+finding poor diagnostics for code snippets that new contributors to Rust might write;
+analyzing RFCs to see if they were missing a discussion of other parts of the language that could affect the design.
+Some of those uses, sometimes unintentionally, did not.</p>
+<p>I've seen LLMs causing three main issues for our community:</p>
+<ol>
+<li>Polished technical products no longer indicate effort and understanding.</li>
+<li>Making code easier to write exacerbates our existing issues with review bandwidth.</li>
+<li>People mechanically copy-pasting to and from an LLM is a waste of our time.</li>
+</ol>
+<p>As time went on, these issues grew and grew, until we had to create dedicated channels and moderation policy for how to deal with them.
+However, those channels work against our goals of being transparent and welcoming, because new contributors have no idea what the rules are.</p>
+<p>The new policy formalizes those rules publicly, so that new contributors know how to join our community without getting their PRs closed for reasons they don't understand,
+and so that existing reviewers can easily point to the rules as an actionable reason when closing PRs that don't follow them.</p>
+<h3 id="technical-products-no-longer-indicate-effort"><a class="anchor" href="#technical-products-no-longer-indicate-effort" aria-hidden="true"></a>
+Technical products no longer indicate effort</h3>
+<p>It used to be that if an open source project got a polished, well-tested, detailed PR,
+that indicated that there was someone on the other end who had put time, effort, and understanding into the PR.
+That influenced Rust's culture in several ways:</p>
+<ul>
+<li>We are generally reluctant to close PRs, since they represent someone else's hard work.</li>
+<li>Our process emphasizes incremental discussions, where PRs are allowed to change existing design if we discover new facts during creation or review.</li>
+<li>We treat PRs as an indication that someone is interested in joining our community and being mentored to work on future PRs.</li>
+</ul>
+<p>With LLMs, none of these signals are reliable.
+Polished PRs no longer indicate effort;
+authors of polished PRs no longer necessarily understand their code—and in the case of autonomous agents, there is no longer someone on the other end at all;
+and because it's become so much easier to write code, a polished PR no longer indicates that someone is likely to stick around for the long term.</p>
+<h3 id="making-code-easier-to-write-causes-review-issues"><a class="anchor" href="#making-code-easier-to-write-causes-review-issues" aria-hidden="true"></a>
+Making code easier to write causes review issues</h3>
+<p>At the time of writing, there are <strong>1,281 open PRs</strong> to <code>rust-lang/rust</code>.
+This represents a staggering amount of time invested by both authors and reviewers.
+We have long had the problem that there are more people who want to write code than people willing to review it.
+With the advent of LLMs, this problem only gets worse.</p>
+<p>Most of the work of reviewing is not simply catching bugs.
+A great deal of it is deciding <em>whether this direction is a good approach</em>, whether the PR is a good idea at all.
+In other words, <a rel="external" href="https://web.archive.org/web/20260213080731/https://siderea.dreamwidth.org/1219758.html">reviewing is made of decisions</a>.</p>
+<p>"Shotgunning" PRs at reviewers incurs a high mental cost for them.
+I think most authors of LLM PRs believe that they are sincerely helping, but from our perspective,
+the code itself is the smallest and in some ways least important part of the change.
+We care much more about authors <em>understanding</em> what the code does, <em>planning</em> how it will change in the future, and <em>deciding</em> what it should look like.
+The code itself cannot help with any of those.</p>
+<h3 id="mechanically-copy-pasting-llm-output-is-a-waste-of-time"><a class="anchor" href="#mechanically-copy-pasting-llm-output-is-a-waste-of-time" aria-hidden="true"></a>
+Mechanically copy-pasting LLM output is a waste of time</h3>
+<p>We will often get people who respond to review comments by copy-pasting them into their LLM, then copy-pasting its response back onto GitHub.
+Bluntly: <strong>this is a waste of everyone's time</strong>.
+If we wanted an LLM's opinion, we could have asked it ourselves.
+We want to hear <em>your</em> thoughts, not a machine's.</p>
+<p>Moreover, this is a breach of trust between the reviewer and the author.
+Our assumption when we review is that we're talking to a real person who wants to do their best work.
+Pasting LLM text creates suspicion: does the author actually care? Is there a person here at all?</p>
+<h3 id="so-why-a-policy"><a class="anchor" href="#so-why-a-policy" aria-hidden="true"></a>
+So why a policy?</h3>
+<p>Before this policy, we had a "wild west" approach to moderation.
+We had dozens of LLM PRs; no disclosure rules; people trying to add risky <a rel="external" href="https://rustc-dev-guide.rust-lang.org/mir/optimizations.html">MIR optimizations</a> as their first PR;
+and people posting "Verification: <a rel="external" href="https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---check"><code>git diff --check</code></a>" in their PR description as if that did something.
+While we had <em>something</em> for moderators to point to in the form of <a rel="external" href="https://triagebot.infra.rust-lang.org/gh-comments/rust-lang/compiler-team/issues/893">"Empower reviewers to reject burdensome PRs"</a>,
+our enforcement was inconsistent and our rules were not published anywhere.
+In practice, the rule was "anything goes, as long as it's not <em>obviously</em> horrible".
+Compared to the previous situation, the new policy is both much more strict and much more clear.</p>
+<p>Regardless of your opinions on whether LLMs are good, bad, or a secret third thing, they can no longer be <em>ignored</em>.
+Our choices are not "no policy" or "policy".
+Our choice is whether to have the policy be an unofficial list of moderation notes or something we stand by publicly.</p>
+<p>Why not ban LLMs altogether, or allow any use of LLMs that we think are pro-social?
+Because Rust governance doesn't work that way.
+We do not have a benevolent dictator who can say
+<a rel="external" href="https://ziglang.org/code-of-conduct/#strict-no-llm-no-ai-policy">"No LLM-generated content, whether it be code or prose."</a>
+or <a rel="external" href="https://lore.kernel.org/linux-media/CAHk-=wi4zC+Ze8e+p3tMv8TtG_80KzsZ1syL9anBtmEh5Z40vg@mail.gmail.com/">"AI is a tool, just like other tools we use"</a>.</p>
+<p>Rust operates by consensus. As the policy says:</p>
+<blockquote>
+<p>There is not a consensus within the Rust project—and likely never will be—about when/how/where it is acceptable to use AI-based tools.
+Many members of the Rust project and community find value in AI;
+many others feel that its negative impact on society and the climate are severe enough that no use is acceptable.
+Still others are working out their opinion.</p>
+<p>Despite these differences, there are many values we all share:</p>
+<ul>
+<li>Building a community of deep experts in our collective projects.</li>
+<li>Building an inclusive community where all feel welcome and respected.</li>
+</ul>
+</blockquote>
+<p>We want it to be possible to change the policy in the future.
+The policy has <a rel="external" href="https://forge.rust-lang.org/policies/llm-usage.html#conditions-for-modification-or-dissolution">several provisions</a> that make it easier to change than it was to originally adopt.
+The leadership council is also <a rel="external" href="https://triagebot.infra.rust-lang.org/gh-comments/rust-lang/leadership-council/issues/308">considering creating a sub-team</a> that would handle LLM policy so we have fewer "nightmare" 30-person approval requirements.</p>
+<p>I do not think every rule in this policy is wholly good.
+I <em>do</em> think that writing our rules down is better than not writing them down,
+and that having a policy that everyone kinda dislikes pushes us to improve our governance structures.</p>
+<h2 id="what-does-the-policy-say"><a class="anchor" href="#what-does-the-policy-say" aria-hidden="true"></a>
+What does the policy say?</h2>
+<p>The policy summarizes itself this way:</p>
+<blockquote>
+<p>It's fine to use LLMs to answer questions, analyze, distill, refine, check, suggest, review. But not to <strong>create</strong>.</p>
+</blockquote>
+<p>Uses in the first category are allowed, sometimes requiring disclosure.
+Uses in the second category are heavily restricted.</p>
+<h3 id="general-rules"><a class="anchor" href="#general-rules" aria-hidden="true"></a>
+General rules</h3>
+<p>No one except the author is required to read LLM output unless they choose to:
+LLM output isn't allowed in public docs, PR descriptions, or GitHub comments unless it's clearly marked;
+reviewers aren't required to look at LLM PRs if they don't want to.</p>
+<p>No one is required to use LLMs to contribute to <code>rust-lang/rust</code>:
+policies must be written first for humans, and only summarized for machines;
+LLM reviews cannot substitute for human review or self-review.</p>
+<p>You are allowed to generate LLM content that only you see, without disclosure,
+as long as you do not post it anywhere that you expect us to read or review.</p>
+<p>Disclosure is required for machine translation, "trivial" changes, discovering bugs, and reviewing other people's work using an LLM.
+We welcome messages posted in your native language; English translation is not required to contribute.</p>
+<p>There are very strict guidelines on LLM-generated code changes:</p>
+<blockquote>
+<p>Pre-arranged, non-critical, high-quality, well-tested, and well-reviewed code changes that are originally created by an LLM are allowed, <strong>with disclosure</strong>.</p>
+</blockquote>
+<p>The policy holds LLM-generated changes to a <em>higher</em> bar than human-authored changes, not a lower one:
+LLM PRs are required to have tests, full stop, regardless of how hard that is, as well as various other restrictions;
+LLMs must not generate soundness-critical changes unless the author is already a domain expert, and even then it's strongly discouraged.</p>
+<p>In general, the policy focuses on <em>understanding</em>, helping to ensure that we have a mental model of our code, not just artifacts that mechanically do the right thing.
+Our motivation is influenced by <a rel="external" href="https://web.archive.org/web/20201109034130/https://www.abelard.org/asimov.php">Profession by Isaac Asimov</a>.
+No programmer tapes.</p>
+<h3 id="moderation-rules"><a class="anchor" href="#moderation-rules" aria-hidden="true"></a>
+Moderation rules</h3>
+<p><strong>You must disclose LLM-generated content.</strong>
+You can choose to not post LLM content, or you can choose to post it and disclose its origin.
+You may not hide LLM involvement.</p>
+<p><strong>Harassment is not allowed.</strong>
+You may not harass people for using an LLM, regardless of whether or not their use is banned by the policy.
+You must follow the <a rel="external" href="https://rust-lang.org/policies/code-of-conduct/">Code of Conduct</a> at all times when interacting with the Rust project.</p>
+<p>See <a rel="external" href="https://forge.rust-lang.org/policies/llm-usage.html">the policy itself</a> for more information.</p>
+<p>Some parts of the policy are unenforceable.
+This is not a bug.
+The goal is <em>not</em> to catch every violation, but to create a clear bright-line rule:
+Disclosure is required for all public LLM text, unless specifically exempted by the policy.
+This allows moderators to identify violations based on <em>actions</em>, not on intent, and only consider intent when deciding how to respond.</p>
+<h2 id="how-does-this-affect-contributors"><a class="anchor" href="#how-does-this-affect-contributors" aria-hidden="true"></a>
+How does this affect contributors?</h2>
+<h3 id="issue-reporters"><a class="anchor" href="#issue-reporters" aria-hidden="true"></a>
+Issue reporters</h3>
+<p>You must disclose any LLM involvement in discovering or reporting issues.
+You must tell us if you found an issue using an LLM.
+You must clearly quote and indicate which parts of your report were LLM-generated;
+the "no LLM-generated comments" rule applies to you too.</p>
+<h3 id="authors-who-post-llm-generated-code"><a class="anchor" href="#authors-who-post-llm-generated-code" aria-hidden="true"></a>
+Authors who post LLM-generated code</h3>
+<p>I have written a list of guidelines you should follow if you make a PR to <code>rust-lang/rust</code> with LLM-generated code.
+You can avoid thinking about them, or indeed reading the list at all, if you follow this simple guideline from the policy:</p>
+<blockquote>
+<p>It's fine to use LLMs to answer questions, analyze, distill, refine, check, suggest, review. But not to <strong>create</strong>.</p>
+</blockquote>
+<p>See the <a rel="external" href="https://forge.rust-lang.org/policies/llm-usage.html#-allowed">"Allowed" section of the policy</a> for a full list of what's meant by that.
+See <a rel="external" href="https://rustc-dev-guide.rust-lang.org/llm-guidance/writing.html">rustc-dev-guide</a> for the full list of guidelines.</p>
+<h3 id="reviewers"><a class="anchor" href="#reviewers" aria-hidden="true"></a>
+Reviewers</h3>
+<h4 id="general-review"><a class="anchor" href="#general-review" aria-hidden="true"></a>
+General review</h4>
+<p>You are allowed to close PRs that don't follow the policy, no questions asked.
+Please point the author to <a rel="external" href="https://rust-lang.zulipchat.com/join/rlfvpemsaacs3pfi6kwqnqjb/">#llm-mentoring</a> at the same time.
+See <a rel="external" href="https://rustc-dev-guide.rust-lang.org/llm-guidance/reviewing.html">the dev guide</a> for exact circumstances and suggested wording.</p>
+<p>You are not responsible for determining whether a PR is LLM-generated;
+that responsibility lies with the author.
+We will add a PR template that asks authors whether their code was LLM-generated so that this rarely comes up.</p>
+<p>If an author claims their code is not LLM-generated, but you're still not sure, please report the PR <em>privately</em> to moderation.
+Style is not evidence; please do not accuse people of using an LLM.
+Reporting is not intended to be a penalty; the mod team is interested in seeing non-violations as well as violations.</p>
+<h4 id="review-of-llm-code"><a class="anchor" href="#review-of-llm-code" aria-hidden="true"></a>
+Review of LLM code</h4>
+<p>If you have volunteered to review LLM PRs, the following section applies to you.
+No one is required to review LLM PRs unless they volunteer.</p>
+<p>Everyone is expected to follow the new policy, not just authors.
+That means it is <strong>your responsibility</strong> to check whether an LLM-created PR touches an area that's disallowed by the policy,
+such as docs, diagnostics, or soundness-critical changes.
+You may request that the author redo it without LLM-generated code, in which case this section doesn't apply.</p>
+<p>There's a more detailed summary of the rules you're expected to enforce in <a rel="external" href="https://rustc-dev-guide.rust-lang.org/llm-guidance/reviewing.html">the dev guide</a>.
+The <a rel="external" href="https://forge.rust-lang.org/policies/llm-usage.html">official policy</a> remains canonical.</p>
+<h2 id="what-next"><a class="anchor" href="#what-next" aria-hidden="true"></a>
+What next?</h2>
+<p>Quite a lot of work has been put into this by moderators, team leads, reviewers, council representatives, and various other people inside and outside the project.
+Some of that work started months ago before the policy itself was written.
+I'd like to thank everyone who contributed, whether directly or indirectly.</p>
+<p>This is not the end of the story.
+One of the goals of the policy is to help us gather data:
+Are people doing interesting and useful things with LLMs? Are they learning? Are they making repeat contributions?
+The answers to those questions will help us determine how the policy changes in the future.</p>
+<p>This is not the first LLM policy published by teams in the Rust project,
+and hopefully it will not be the last.
+While the current policy only applies to the <code>rust-lang/rust</code> monorepo,
+I still believe that Rust would benefit from a project-wide policy that specifies what we expect in chats, forums, public communications, repositories without an explicit policy, and other cross-project areas.</p>
+
+    </div>
+  </div>
+</section>
+    <footer class="footer">
+      <div class="w-100 mw-none ph3 mw8-m mw9-l center f3">
+        <div class="row">
+          <div class="four columns mt3 mt0-l" id="get-help">
+            <h4>Get help!</h4>
+            <ul>
+              <li><a href="https://doc.rust-lang.org" target="_blank" rel="noopener">Documentation</a></li>
+              <li><a href="mailto:core-team@rust-lang.org">Contact the Rust Team</a></li>
+            </ul>
+          </div>
+          <div class="four columns mt3 mt0-l">
+            <h4>Terms and policies</h4>
+            <ul>
+              <li><a href="https://www.rust-lang.org/policies/code-of-conduct">Code of Conduct</a></li>
+              <li><a href="https://www.rust-lang.org/policies/licenses">Licenses</a></li>
+              <li><a href="https://rustfoundation.org/policy/rust-trademark-policy">Logo Policy and Media Guide</a></li>
+              <li><a href="https://www.rust-lang.org/policies/security">Security Disclosures</a></li>
+              <li><a href="https://www.rust-lang.org/policies">All Policies</a></li>
+            </ul>
+          </div>
+          <div class="four columns mt3 mt0-l">
+            <h4>Social</h4>
+            <div class="flex flex-row flex-wrap">
+              <a rel="me" href="https://social.rust-lang.org/@rust" target="_blank" rel="noopener"><img src="https://blog.rust-lang.org/images/mastodon.svg" alt="Mastodon"/></a>
+              <a rel="me" href="https://bsky.app/profile/rust-lang.org" target="_blank" rel="noopener"><img src="https://blog.rust-lang.org/images/bluesky.svg" alt="Bluesky"/></a>
+              <a href="https://www.youtube.com/channel/UCaYhcUwRBNscFNUKTjgPFiA" target="_blank" rel="noopener"><img style="padding-top: 6px; padding-bottom:6px" src="https://blog.rust-lang.org/images/youtube.svg" alt="YouTube"/></a>
+              <a href="https://discord.gg/rust-lang" target="_blank" rel="noopener"><img src="https://blog.rust-lang.org/images/discord.svg" alt="Discord"/></a>
+              <a href="https://github.com/rust-lang" target="_blank" rel="noopener"><img src="https://blog.rust-lang.org/images/github.svg" alt="GitHub"/></a>
+            </div>
+            <h4 class="mt4 mb3">RSS</h4>
+            <ul>
+              <li><a href="https://blog.rust-lang.org/feed.xml">Main Blog</a></li>
+              <li><a href="https://blog.rust-lang.org/inside-rust/feed.xml">"Inside Rust" Blog</a></li>
+            </ul>
+          </div>
+    
+        </div>
+        <div class="attribution">
+          Maintained by the Rust Team. See a typo?
+          <a href="https://github.com/rust-lang/blog.rust-lang.org/edit/main/content/inside-rust/rust-langrust-is-adopting-an-llm-policy.md" target="_blank" rel="noopener">Send a fix here</a>!
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
