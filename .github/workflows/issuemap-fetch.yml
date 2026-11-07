@@ -2,7 +2,7 @@ name: issuemap fetch
 on:
   push:
     branches: [issuemap-data]
-    paths: [issuemap/requests.txt, .github/workflows/issuemap-fetch.yml]
+    paths: [issuemap/requests.txt, issuemap/web.txt, .github/workflows/issuemap-fetch.yml]
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,6 +23,17 @@ jobs:
             gh api --paginate "repos/$path/comments?per_page=100" | jq -s 'add' > "issuemap/data/${name}.comments.json"
             echo "$url -> $(jq length issuemap/data/${name}.comments.json) comments"
           done
+      - name: Fetch web pages
+        run: |
+          mkdir -p issuemap/data/web
+          [ -f issuemap/web.txt ] || exit 0
+          i=0
+          grep -v '^#' issuemap/web.txt | grep -E '^https?://' | while read -r url; do
+            i=$((i+1))
+            code=$(curl -sSL -A "Mozilla/5.0 issuemap" -o "issuemap/data/web/$i.html" -w '%{http_code}' "$url" || echo fail)
+            echo "$i $code $url" >> issuemap/data/web/index.txt
+          done
+          cat issuemap/data/web/index.txt
       - name: Commit data
         run: |
           git config user.name "issuemap-bot"

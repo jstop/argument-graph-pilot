@@ -1,0 +1,4 @@
+# One URL per line; each is downloaded raw into issuemap/data/web/.
+https://paper.dropbox.com/doc/Await-Syntax-Write-Up--AcIbhZ1tPTCloXb2fmFpBTt~Ag-t9NlOSeI4RQ8AINsaSSyJ
+https://web.archive.org/web/2019/https://paper.dropbox.com/doc/Await-Syntax-Write-Up--AcIbhZ1tPTCloXb2fmFpBTt~Ag-t9NlOSeI4RQ8AINsaSSyJ
+https://archive.org/wayback/available?url=paper.dropbox.com/doc/Await-Syntax-Write-Up--AcIbhZ1tPTCloXb2fmFpBTt~Ag-t9NlOSeI4RQ8AINsaSSyJ
