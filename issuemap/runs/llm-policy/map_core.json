@@ -1,0 +1,1883 @@
+{
+ "points": {
+  "P1": {
+   "statement": "The policy should cover only rust-lang/rust, not subtrees, submodules, dependencies or other repositories.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C1"
+   ]
+  },
+  "P2": {
+   "statement": "rust-lang/rust is receiving a flood of low-effort, mostly LLM-written PRs.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": null,
+   "claims": [
+    "C2"
+   ]
+  },
+  "P3": {
+   "statement": "Having some policy, even a permissive one, beats no policy, which would bring confusion, distrust and wasted reviewer and moderator time.",
+   "about": [
+    "no policy / leave to reviewers",
+    "general"
+   ],
+   "stance": "against",
+   "claims": [
+    "C3",
+    "C11",
+    "C29",
+    "C94",
+    "C97"
+   ]
+  },
+  "P4": {
+   "statement": "The policy deliberately bans more than strictly needed so it is easy to understand and moderate.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C4"
+   ]
+  },
+  "P5": {
+   "statement": "A repo-specific policy fits because project-wide agreement is impractical and teams need different standards.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C5",
+    "C42"
+   ]
+  },
+  "P6": {
+   "statement": "The teams that review rust-lang/rust are entitled to set its policy, which does not commit the wider project, and the Leadership Council is not the right body.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C39",
+    "C41",
+    "C51"
+   ]
+  },
+  "P7": {
+   "statement": "Escalating to the Leadership Council or a project-wide policy would add process and block the policy, as it has blocked earlier ones.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C47",
+    "C48",
+    "C71",
+    "C175"
+   ]
+  },
+  "P8": {
+   "statement": "The policy has met its approval threshold and should go ahead without further delay.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C176"
+   ]
+  },
+  "P9": {
+   "statement": "The policy effectively commits the whole project and reflects a small opinionated group, so a trusted top-level body like the Leadership Council should decide it.",
+   "about": [
+    "general"
+   ],
+   "stance": "against",
+   "claims": [
+    "C28",
+    "C38",
+    "C57"
+   ]
+  },
+  "P10": {
+   "statement": "A Leadership Council-appointed group should gather data and create a permanent policy.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C24",
+    "C52"
+   ]
+  },
+  "P11": {
+   "statement": "This policy should be explicitly interim, replaced by a project-wide policy or reverted if no replacement emerges.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C25",
+    "C133"
+   ]
+  },
+  "P12": {
+   "statement": "The policy should wait for the proposed Leadership Council LLM committee, which would solve the changeability problem.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C174"
+   ]
+  },
+  "P13": {
+   "statement": "An expected easier update path such as the LLM committee makes accepting the policy with suboptimal parts tolerable.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C177"
+   ]
+  },
+  "P14": {
+   "statement": "Looser rules for project members than for newcomers would entrench power and feel unfriendly.",
+   "about": [
+    "different rules for project members"
+   ],
+   "stance": "against",
+   "claims": [
+    "C6"
+   ]
+  },
+  "P15": {
+   "statement": "A lenient responsible-use policy ignores reputational harm and makes moderation harder.",
+   "about": [
+    "allow with disclosure"
+   ],
+   "stance": "against",
+   "claims": [
+    "C7"
+   ]
+  },
+  "P16": {
+   "statement": "The policy needs a time limit, automatic revisit trigger or precise allowed cases so it gets revisited.",
+   "about": [
+    "time-limited/experimental policy",
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": "for",
+   "claims": [
+    "C8",
+    "C36",
+    "C37"
+   ]
+  },
+  "P17": {
+   "statement": "A threshold-of-originality exception is needed so well-meaning contributors are not forced to discard, rewrite or lie.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C9"
+   ]
+  },
+  "P18": {
+   "statement": "There is no consensus for a full ban, which would drive people away, so the policy reflects what is politically possible.",
+   "about": [
+    "ban LLM-generated contributions",
+    "general"
+   ],
+   "stance": "against",
+   "claims": [
+    "C10",
+    "C63",
+    "C90"
+   ]
+  },
+  "P19": {
+   "statement": "Ethical objections can only be satisfied by a full ban, so a policy addressing practical concerns cannot meet them.",
+   "about": [
+    "ban LLM-generated contributions",
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C79",
+    "C96"
+   ]
+  },
+  "P20": {
+   "statement": "Ruling the main objections out of scope only sets them aside, creating the appearance of consensus; all aspects should be included.",
+   "about": [
+    "ban LLM-generated contributions",
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C62",
+    "C66",
+    "C85"
+   ]
+  },
+  "P21": {
+   "statement": "Social and environmental impacts of LLMs should be in scope, and leaving ethics out will alienate people the project has worked to include.",
+   "about": [
+    "ethics in policy",
+    "general"
+   ],
+   "stance": "against",
+   "claims": [
+    "C104",
+    "C106"
+   ]
+  },
+  "P22": {
+   "statement": "The policy should be adopted as written without ethics, since later policies can fix its shortcomings.",
+   "about": [
+    "general",
+    "ethics in policy"
+   ],
+   "stance": "for",
+   "claims": [
+    "C98"
+   ]
+  },
+  "P23": {
+   "statement": "The policy should not be pushed through with a plan to fix objections later, since its rules will be very hard to change.",
+   "about": [
+    "circuit breaker",
+    "time-limited/experimental policy"
+   ],
+   "stance": "against",
+   "claims": [
+    "C111"
+   ]
+  },
+  "P24": {
+   "statement": "The FCP should get extra time because the late changes were large.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C110"
+   ]
+  },
+  "P25": {
+   "statement": "The policy is balanced and nuanced and does not read as a project stance for or against AI.",
+   "about": [
+    "general",
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C46",
+    "C50"
+   ]
+  },
+  "P26": {
+   "statement": "The policy can reasonably be read as anti-AI and is not neutral, since banning code writing and merely having it set a precedent.",
+   "about": [
+    "ban LLM-generated contributions",
+    "general"
+   ],
+   "stance": "against",
+   "claims": [
+    "C49",
+    "C59"
+   ]
+  },
+  "P27": {
+   "statement": "The policy is so restrictive that it is worse than no policy, setting a precedent that harms potential contributors.",
+   "about": [
+    "no policy / leave to reviewers",
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C14",
+    "C26"
+   ]
+  },
+  "P28": {
+   "statement": "US lawyers initially indicate LLM output likely poses no copyright problem.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C12"
+   ]
+  },
+  "P29": {
+   "statement": "Private feedback suggests no silent majority opposes the policy, though the sample is unrepresentative.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C13"
+   ]
+  },
+  "P30": {
+   "statement": "Maintainers should have flexibility to judge AI-assisted PRs by quality, with guidelines rather than hard rules that cause fairness disputes.",
+   "about": [
+    "no policy / leave to reviewers",
+    "ban LLM-generated contributions"
+   ],
+   "stance": null,
+   "claims": [
+    "C15",
+    "C16",
+    "C17",
+    "C18",
+    "C20",
+    "C77"
+   ]
+  },
+  "P31": {
+   "statement": "Treating an honestly disclosed AI-generated PR as an instant code-of-conduct violation is untenable.",
+   "about": [
+    "ban LLM-generated contributions",
+    "allow with disclosure"
+   ],
+   "stance": "against",
+   "claims": [
+    "C19"
+   ]
+  },
+  "P32": {
+   "statement": "Low-autonomy AI uses are largely solved in practice while end-to-end AI work is risky.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C21"
+   ]
+  },
+  "P33": {
+   "statement": "The line should be drawn by the AI's detectable level of autonomy rather than creation versus review.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C23"
+   ]
+  },
+  "P34": {
+   "statement": "AI is poor at code review because models are too agreeable.",
+   "about": [
+    "allow LLM-assisted review"
+   ],
+   "stance": "against",
+   "claims": [
+    "C22"
+   ]
+  },
+  "P35": {
+   "statement": "Once a restrictive policy is in place, its supporters will have no incentive to compromise.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C27"
+   ]
+  },
+  "P36": {
+   "statement": "The policy will be very hard to change because many people can each block any change.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C53",
+    "C123",
+    "C142"
+   ]
+  },
+  "P37": {
+   "statement": "Calling the policy an experiment is misleading because people do not believe it can easily be changed.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": "against",
+   "claims": [
+    "C143",
+    "C173"
+   ]
+  },
+  "P38": {
+   "statement": "The compromise provisions will be effectively permanent regardless of their experimental label.",
+   "about": [
+    "time-limited/experimental policy",
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": "against",
+   "claims": [
+    "C122",
+    "C127",
+    "C130"
+   ]
+  },
+  "P39": {
+   "statement": "The experiment lacks defined parameters, success criteria or an end, leaving people disagreeing over whether it is temporary.",
+   "about": [
+    "time-limited/experimental policy",
+    "circuit breaker"
+   ],
+   "stance": null,
+   "claims": [
+    "C118",
+    "C126",
+    "C132",
+    "C137",
+    "C160"
+   ]
+  },
+  "P40": {
+   "statement": "The policy text says the experiment exists to inform future policy and is not meant to be permanent.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": "for",
+   "claims": [
+    "C131",
+    "C159"
+   ]
+  },
+  "P41": {
+   "statement": "The non-permanence wording was added after reviewers approved, so it cannot justify the policy's framing.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C141"
+   ]
+  },
+  "P42": {
+   "statement": "Ending the experiment after a fixed time or PR count would not work because no default outcome forces negotiation.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": "against",
+   "claims": [
+    "C119"
+   ]
+  },
+  "P43": {
+   "statement": "The 50% circuit breaker would not bring both sides back to negotiate and could deepen polarization.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C124",
+    "C128",
+    "C129"
+   ]
+  },
+  "P44": {
+   "statement": "The circuit breaker sets a boundary no side wants, forcing a discussion and review of the policy.",
+   "about": [
+    "circuit breaker",
+    "time-limited/experimental policy"
+   ],
+   "stance": "for",
+   "claims": [
+    "C125",
+    "C172"
+   ]
+  },
+  "P45": {
+   "statement": "If LLMs are used in over half of PRs the arrangement is no longer an experiment, justifying a circuit breaker.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C120"
+   ]
+  },
+  "P46": {
+   "statement": "A circuit breaker capping LLM PRs at half of merged PRs should be added.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": null,
+   "claims": [
+    "C107"
+   ]
+  },
+  "P47": {
+   "statement": "The policy must prevent pushing non-LLM contributors out, which the pro-LLM side has already been doing.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C121",
+    "C163"
+   ]
+  },
+  "P48": {
+   "statement": "Halting a category of PRs at an arbitrary limit is an unjustified last-minute change that enforces an aesthetic limit rather than reducing harm.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C112",
+    "C113"
+   ]
+  },
+  "P49": {
+   "statement": "The circuit breaker is excessive control that marks LLM-using contributors as second-class.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C114"
+   ]
+  },
+  "P50": {
+   "statement": "Reasonable guardrails on LLM use are workable, unlike a cutoff.",
+   "about": [
+    "general",
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C146"
+   ]
+  },
+  "P51": {
+   "statement": "The circuit breaker deters corporate contributors and investment, pushing patches downstream, and the project loses by deterring them.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C144",
+    "C148",
+    "C149",
+    "C155",
+    "C156",
+    "C162"
+   ]
+  },
+  "P52": {
+   "statement": "AI tooling is standard and legitimately required at many companies, so developers cannot easily stop using it.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C145",
+    "C161"
+   ]
+  },
+  "P53": {
+   "statement": "Corporations should not dictate what the project accepts; they must follow its rules.",
+   "about": [
+    "circuit breaker",
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C151",
+    "C153",
+    "C157"
+   ]
+  },
+  "P54": {
+   "statement": "Employers forcing staff to use AI is abuse and should not shape Rust's policy.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C152"
+   ]
+  },
+  "P55": {
+   "statement": "Being forced to use LLMs by employers is not an argument on the merits for allowing them.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C154",
+    "C158"
+   ]
+  },
+  "P56": {
+   "statement": "Project restrictions could give employees leverage to avoid generative AI.",
+   "about": [
+    "circuit breaker",
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C150"
+   ]
+  },
+  "P57": {
+   "statement": "LLVM shows sustained corporate contribution is achievable, so company incentives alone do not explain Rust's difficulties.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": null,
+   "claims": [
+    "C147"
+   ]
+  },
+  "P58": {
+   "statement": "Corporations upstream code partly to shift correctness risk onto the project while using error-prone tools.",
+   "about": [
+    "circuit breaker",
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C164"
+   ]
+  },
+  "P59": {
+   "statement": "The project need not stay open indefinitely to tools whose engineering consequences at scale are unknown.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C165"
+   ]
+  },
+  "P60": {
+   "statement": "Rust's value to corporations lies in being different from them, which accommodating their tooling would erode.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C166"
+   ]
+  },
+  "P61": {
+   "statement": "The breaker's cost is the effort to rework or clean-room AI-made fixes before upstreaming them.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C167",
+    "C168"
+   ]
+  },
+  "P62": {
+   "statement": "The circuit breaker only means a contributor may wait up to 10 days, not redo work.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C169"
+   ]
+  },
+  "P63": {
+   "statement": "The circuit breaker pushes contributors to deploy locally while waiting or write non-AI contributions instead.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "against",
+   "claims": [
+    "C170"
+   ]
+  },
+  "P64": {
+   "statement": "Running a fork is always easier than upstreaming, so the debate is about how much review is required.",
+   "about": [
+    "circuit breaker"
+   ],
+   "stance": "for",
+   "claims": [
+    "C171"
+   ]
+  },
+  "P65": {
+   "statement": "A policy banning AI would attract contributors who prefer software built without AI, as lists of such projects show.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C30",
+    "C31"
+   ]
+  },
+  "P66": {
+   "statement": "Banning LLMs would drive away contributors who value moderate LLM use.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C32"
+   ]
+  },
+  "P67": {
+   "statement": "Policy should not be decided based on outside lists that shame projects.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C33"
+   ]
+  },
+  "P68": {
+   "statement": "The No-AI list promotes projects and is not a harassment tool.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C34"
+   ]
+  },
+  "P69": {
+   "statement": "The compromise is acceptable because the main concern is AI authoring contributions, not review or lookup.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C35"
+   ]
+  },
+  "P70": {
+   "statement": "Clearly marked, vetted AI-generated reports should be allowed as supplemental material so security work is not impeded.",
+   "about": [
+    "allow with disclosure"
+   ],
+   "stance": "for",
+   "claims": [
+    "C43",
+    "C44"
+   ]
+  },
+  "P71": {
+   "statement": "If AI-found security issues flood in, an exemption can be requested later.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C45"
+   ]
+  },
+  "P72": {
+   "statement": "The project already agrees first-party LLM-based security analysis is valuable.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C139"
+   ]
+  },
+  "P73": {
+   "statement": "An alternative set of guidelines for allowing LLM-authored code has been drafted.",
+   "about": [
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": null,
+   "claims": [
+    "C40"
+   ]
+  },
+  "P74": {
+   "statement": "A wide range of policies would be acceptable apart from extremes.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C54"
+   ]
+  },
+  "P75": {
+   "statement": "Handling LLM contributions case by case would be fine because there are currently few of them; no policy should be considered.",
+   "about": [
+    "no policy / leave to reviewers"
+   ],
+   "stance": "for",
+   "claims": [
+    "C55",
+    "C56",
+    "C60"
+   ]
+  },
+  "P76": {
+   "statement": "Many LLM-related contributions are not slop and come from newcomers, making case-by-case handling hard.",
+   "about": [
+    "no policy / leave to reviewers"
+   ],
+   "stance": "against",
+   "claims": [
+    "C95"
+   ]
+  },
+  "P77": {
+   "statement": "Does the policy require even experienced developers to use the experimental process for LLM-generated content?",
+   "about": [
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": null,
+   "claims": [
+    "C58"
+   ]
+  },
+  "P78": {
+   "statement": "LLM-generated code is unreliable and hallucinates, so a full ban is better for a compiler valued for safety.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C61",
+    "C82",
+    "C92"
+   ]
+  },
+  "P79": {
+   "statement": "Humans cannot reliably catch machine-generated errors, especially as LLMs erode their skill and judgement.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C68",
+    "C93"
+   ]
+  },
+  "P80": {
+   "statement": "LLMs cause deskilling and shift skills to a few corporations.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C105"
+   ]
+  },
+  "P81": {
+   "statement": "Even limited permission for LLM code is too much and a ban is needed.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C67",
+    "C102"
+   ]
+  },
+  "P82": {
+   "statement": "Rust would be better off ending than relying on LLMs that undermine its safety goals.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C81",
+    "C88"
+   ]
+  },
+  "P83": {
+   "statement": "Would opponents prefer no Rust project or no policy over one that uses LLMs?",
+   "about": [
+    "ban LLM-generated contributions",
+    "no policy / leave to reviewers"
+   ],
+   "stance": null,
+   "claims": [
+    "C80"
+   ]
+  },
+  "P84": {
+   "statement": "Rust thrived before LLMs, so it is a false dichotomy that a full ban would threaten the project.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C99",
+    "C100"
+   ]
+  },
+  "P85": {
+   "statement": "Seeking consensus should not override what is right, so a ban should not wait for consensus.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C103"
+   ]
+  },
+  "P86": {
+   "statement": "The policy authors are trusted to merge rustc code, so they can be trusted to allow LLMs safely.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "against",
+   "claims": [
+    "C64"
+   ]
+  },
+  "P87": {
+   "statement": "A person certifying safety-critical rustc builds believes the policy will not hurt reliability.",
+   "about": [
+    "stricter rules for soundness-critical code"
+   ],
+   "stance": null,
+   "claims": [
+    "C65"
+   ]
+  },
+  "P88": {
+   "statement": "Trusting maintainers' judgement on code does not mean trusting their judgement on LLM policy.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C69"
+   ]
+  },
+  "P89": {
+   "statement": "The added experimental-use section resolves the revisit concern even without automatic expiry.",
+   "about": [
+    "time-limited/experimental policy",
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": "for",
+   "claims": [
+    "C70"
+   ]
+  },
+  "P90": {
+   "statement": "Requiring authors to find a reviewer first is not ideal but necessary given limited review capacity.",
+   "about": [
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": "for",
+   "claims": [
+    "C73"
+   ]
+  },
+  "P91": {
+   "statement": "The soundness-critical restriction relies on reviewer discretion but its guidelines and early discussion help.",
+   "about": [
+    "stricter rules for soundness-critical code",
+    "allow only by prior arrangement with reviewers"
+   ],
+   "stance": "for",
+   "claims": [
+    "C74"
+   ]
+  },
+  "P92": {
+   "statement": "The policy is a cautious compromise: it defaults to no while offering a dedicated route for reviewed LLM changes.",
+   "about": [
+    "allow only by prior arrangement with reviewers",
+    "time-limited/experimental policy"
+   ],
+   "stance": "for",
+   "claims": [
+    "C75",
+    "C134"
+   ]
+  },
+  "P93": {
+   "statement": "The policy's complex rules signal low trust in fellow reviewers.",
+   "about": [
+    "allow only by prior arrangement with reviewers",
+    "stricter rules for soundness-critical code"
+   ],
+   "stance": "against",
+   "claims": [
+    "C76"
+   ]
+  },
+  "P94": {
+   "statement": "A group should experiment with handling LLM content instead of over-specifying review details.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C78"
+   ]
+  },
+  "P95": {
+   "statement": "The social friction around LLMs will cost the community more than LLM code is worth.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C83"
+   ]
+  },
+  "P96": {
+   "statement": "Compiler-team decisions shape Rust's wider culture and should not be judged in isolation.",
+   "about": [
+    "ban LLM-generated contributions"
+   ],
+   "stance": "for",
+   "claims": [
+    "C84"
+   ]
+  },
+  "P97": {
+   "statement": "Experienced facilitators should be brought in because the conflict is a social problem.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C86"
+   ]
+  },
+  "P98": {
+   "statement": "Project members decide while outside input is heard but not decisive.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C87"
+   ]
+  },
+  "P99": {
+   "statement": "The project currently has almost no LLM restrictions and this policy adds significant ones.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C89"
+   ]
+  },
+  "P100": {
+   "statement": "The policy is a welcome step in the right direction.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C91"
+   ]
+  },
+  "P101": {
+   "statement": "The real dangers are an internal split and maintainer burnout from slop PRs, making some policy necessary.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C101"
+   ]
+  },
+  "P102": {
+   "statement": "LLMs should be barred from meetings unless members consent.",
+   "about": [
+    "LLMs in meetings"
+   ],
+   "stance": null,
+   "claims": [
+    "C108"
+   ]
+  },
+  "P103": {
+   "statement": "A meetings rule is out of scope for a code-contribution policy and will be reverted.",
+   "about": [
+    "LLMs in meetings"
+   ],
+   "stance": "against",
+   "claims": [
+    "C115",
+    "C116",
+    "C117"
+   ]
+  },
+  "P104": {
+   "statement": "The policy should state that LLMs are optional and never required for contributing.",
+   "about": [
+    "general"
+   ],
+   "stance": null,
+   "claims": [
+    "C109"
+   ]
+  },
+  "P105": {
+   "statement": "If the experiment succeeds, will LLM supporters make it canonical by dropping the experimental wording?",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C135"
+   ]
+  },
+  "P106": {
+   "statement": "What outcome or data would change minds about whether accepted LLM contributions are worthwhile?",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": null,
+   "claims": [
+    "C136"
+   ]
+  },
+  "P107": {
+   "statement": "The experiment will most likely yield mixed results and nuanced adjustments rather than cancellation or permanent adoption.",
+   "about": [
+    "time-limited/experimental policy"
+   ],
+   "stance": "for",
+   "claims": [
+    "C138",
+    "C140"
+   ]
+  },
+  "P108": {
+   "statement": "The policy is long but its nuance is needed now and it can be summarized after merging.",
+   "about": [
+    "general"
+   ],
+   "stance": "for",
+   "claims": [
+    "C72"
+   ]
+  }
+ },
+ "edges": [
+  {
+   "from": "P3",
+   "to": "P75",
+   "type": "attacks",
+   "why": "Argues a policy beats the confusion of case-by-case handling."
+  },
+  {
+   "from": "P3",
+   "to": "P27",
+   "type": "attacks",
+   "why": "Argues any policy beats having none."
+  },
+  {
+   "from": "P76",
+   "to": "P75",
+   "type": "attacks",
+   "why": "Says case-by-case handling is hard because many LLM PRs are not slop."
+  },
+  {
+   "from": "P75",
+   "to": "P2",
+   "type": "attacks",
+   "why": "Says LLM-involved contributions are currently few, against a flood."
+  },
+  {
+   "from": "P2",
+   "to": "P3",
+   "type": "supports",
+   "why": "A flood of slop PRs motivates having a policy."
+  },
+  {
+   "from": "P101",
+   "to": "P3",
+   "type": "supports",
+   "why": "Burnout from slop PRs makes some policy necessary."
+  },
+  {
+   "from": "P30",
+   "to": "P4",
+   "type": "attacks",
+   "why": "Prefers reviewer flexibility over deliberately broad hard rules."
+  },
+  {
+   "from": "P17",
+   "to": "P4",
+   "type": "attacks",
+   "why": "Argues for an exception to the broad ban."
+  },
+  {
+   "from": "P31",
+   "to": "P4",
+   "type": "attacks",
+   "why": "Objects to treating disclosed AI use as a violation."
+  },
+  {
+   "from": "P33",
+   "to": "P4",
+   "type": "attacks",
+   "why": "Proposes drawing the line by autonomy instead."
+  },
+  {
+   "from": "P32",
+   "to": "P33",
+   "type": "supports",
+   "why": "Practical experience shows risk tracks autonomy."
+  },
+  {
+   "from": "P15",
+   "to": "P30",
+   "type": "attacks",
+   "why": "Says lenient discretion harms reputation and moderation."
+  },
+  {
+   "from": "P5",
+   "to": "P6",
+   "type": "supports",
+   "why": "Differing team needs justify team-level authority."
+  },
+  {
+   "from": "P9",
+   "to": "P6",
+   "type": "attacks",
+   "why": "Says the policy commits the project, so the council should decide."
+  },
+  {
+   "from": "P6",
+   "to": "P9",
+   "type": "attacks",
+   "why": "Says the policy does not commit the project and the council is not the right body."
+  },
+  {
+   "from": "P7",
+   "to": "P9",
+   "type": "attacks",
+   "why": "Escalation would block the policy."
+  },
+  {
+   "from": "P96",
+   "to": "P6",
+   "type": "attacks",
+   "why": "Compiler decisions shape wider culture, so it is not just a repo matter."
+  },
+  {
+   "from": "P10",
+   "to": "P6",
+   "type": "attacks",
+   "why": "Prefers a council-appointed group over team-level decision."
+  },
+  {
+   "from": "P29",
+   "to": "P9",
+   "type": "attacks",
+   "why": "Feedback suggests no silent majority against a small group's policy."
+  },
+  {
+   "from": "P12",
+   "to": "P8",
+   "type": "attacks",
+   "why": "Argues the policy should wait rather than proceed now."
+  },
+  {
+   "from": "P7",
+   "to": "P12",
+   "type": "attacks",
+   "why": "Says the committee should not hold up a repo policy."
+  },
+  {
+   "from": "P13",
+   "to": "P12",
+   "type": "attacks",
+   "why": "Committee's arrival makes accepting now tolerable instead of waiting."
+  },
+  {
+   "from": "P11",
+   "to": "P16",
+   "type": "supports",
+   "why": "An interim policy fits a revisit requirement."
+  },
+  {
+   "from": "P18",
+   "to": "P78",
+   "type": "attacks",
+   "why": "No consensus exists for a full ban."
+  },
+  {
+   "from": "P18",
+   "to": "P81",
+   "type": "attacks",
+   "why": "No consensus exists for a full ban."
+  },
+  {
+   "from": "P85",
+   "to": "P18",
+   "type": "attacks",
+   "why": "Says rightness should override consensus."
+  },
+  {
+   "from": "P20",
+   "to": "P18",
+   "type": "attacks",
+   "why": "Says apparent consensus comes from excluding objections."
+  },
+  {
+   "from": "P19",
+   "to": "P21",
+   "type": "attacks",
+   "why": "Restating ethical concerns cannot change the outcome without consensus for a ban."
+  },
+  {
+   "from": "P21",
+   "to": "P22",
+   "type": "attacks",
+   "why": "Ethics should be in the policy rather than left out."
+  },
+  {
+   "from": "P23",
+   "to": "P22",
+   "type": "attacks",
+   "why": "Fixing later is unrealistic because rules are hard to change."
+  },
+  {
+   "from": "P25",
+   "to": "P26",
+   "type": "attacks",
+   "why": "Says the policy does not read as anti-AI."
+  },
+  {
+   "from": "P26",
+   "to": "P25",
+   "type": "attacks",
+   "why": "Says banning code writing reads as anti-AI."
+  },
+  {
+   "from": "P34",
+   "to": "P69",
+   "type": "attacks",
+   "why": "Questions AI for review, which the compromise allows."
+  },
+  {
+   "from": "P36",
+   "to": "P37",
+   "type": "supports",
+   "why": "Hard-to-change rules make the experiment label misleading."
+  },
+  {
+   "from": "P36",
+   "to": "P40",
+   "type": "attacks",
+   "why": "Practical changeability undercuts the stated non-permanence."
+  },
+  {
+   "from": "P37",
+   "to": "P40",
+   "type": "attacks",
+   "why": "The experimental label is misleading without easy change."
+  },
+  {
+   "from": "P38",
+   "to": "P40",
+   "type": "attacks",
+   "why": "Provisions stay in force whatever the label."
+  },
+  {
+   "from": "P39",
+   "to": "P40",
+   "type": "attacks",
+   "why": "No ending clause undercuts claimed non-permanence."
+  },
+  {
+   "from": "P41",
+   "to": "P40",
+   "type": "attacks",
+   "why": "The wording came after approvals."
+  },
+  {
+   "from": "P40",
+   "to": "P38",
+   "type": "attacks",
+   "why": "The text explicitly says the experiment is not permanent."
+  },
+  {
+   "from": "P35",
+   "to": "P38",
+   "type": "supports",
+   "why": "Lack of incentive to compromise keeps provisions in place."
+  },
+  {
+   "from": "P107",
+   "to": "P40",
+   "type": "supports",
+   "why": "Expects adjustment rather than permanent adoption."
+  },
+  {
+   "from": "P89",
+   "to": "P16",
+   "type": "attacks",
+   "why": "Says the experimental section resolves the revisit concern without expiry."
+  },
+  {
+   "from": "P42",
+   "to": "P16",
+   "type": "attacks",
+   "why": "A fixed-time end would not force negotiation."
+  },
+  {
+   "from": "P43",
+   "to": "P44",
+   "type": "attacks",
+   "why": "The breaker's default will not bring sides back."
+  },
+  {
+   "from": "P44",
+   "to": "P43",
+   "type": "attacks",
+   "why": "The breaker sets a boundary no side wants, forcing review."
+  },
+  {
+   "from": "P45",
+   "to": "P46",
+   "type": "supports",
+   "why": "Over half means no longer an experiment."
+  },
+  {
+   "from": "P47",
+   "to": "P46",
+   "type": "supports",
+   "why": "The breaker protects non-LLM contributors."
+  },
+  {
+   "from": "P48",
+   "to": "P46",
+   "type": "attacks",
+   "why": "The limit is arbitrary and last-minute."
+  },
+  {
+   "from": "P49",
+   "to": "P46",
+   "type": "attacks",
+   "why": "The breaker marks LLM users as second-class."
+  },
+  {
+   "from": "P51",
+   "to": "P46",
+   "type": "attacks",
+   "why": "The breaker deters corporate contributors."
+  },
+  {
+   "from": "P50",
+   "to": "P46",
+   "type": "attacks",
+   "why": "Prior guardrails suffice without a cutoff."
+  },
+  {
+   "from": "P63",
+   "to": "P46",
+   "type": "attacks",
+   "why": "The breaker distorts contributor behavior."
+  },
+  {
+   "from": "P59",
+   "to": "P46",
+   "type": "supports",
+   "why": "Openness to unknown tools need not be indefinite."
+  },
+  {
+   "from": "P52",
+   "to": "P51",
+   "type": "supports",
+   "why": "Corporate developers cannot stop using AI."
+  },
+  {
+   "from": "P53",
+   "to": "P51",
+   "type": "attacks",
+   "why": "Corporations should follow project rules rather than shape them."
+  },
+  {
+   "from": "P54",
+   "to": "P52",
+   "type": "attacks",
+   "why": "Calls mandated AI use abuse."
+  },
+  {
+   "from": "P52",
+   "to": "P54",
+   "type": "attacks",
+   "why": "Says mandated AI use is legitimate."
+  },
+  {
+   "from": "P55",
+   "to": "P52",
+   "type": "attacks",
+   "why": "Mandated use is not a merits argument."
+  },
+  {
+   "from": "P57",
+   "to": "P51",
+   "type": "attacks",
+   "why": "LLVM shows corporate contribution is achievable regardless."
+  },
+  {
+   "from": "P64",
+   "to": "P51",
+   "type": "attacks",
+   "why": "Forks are always easier, so the breaker does not change incentives."
+  },
+  {
+   "from": "P58",
+   "to": "P53",
+   "type": "supports",
+   "why": "Corporations shift risk onto the project."
+  },
+  {
+   "from": "P60",
+   "to": "P53",
+   "type": "supports",
+   "why": "Rust's value lies in not accommodating corporations."
+  },
+  {
+   "from": "P62",
+   "to": "P61",
+   "type": "attacks",
+   "why": "Contributors only wait, they do not redo work."
+  },
+  {
+   "from": "P65",
+   "to": "P78",
+   "type": "supports",
+   "why": "A ban would attract contributors."
+  },
+  {
+   "from": "P66",
+   "to": "P65",
+   "type": "attacks",
+   "why": "A ban would also drive contributors away."
+  },
+  {
+   "from": "P67",
+   "to": "P65",
+   "type": "attacks",
+   "why": "Outside lists should not drive policy."
+  },
+  {
+   "from": "P68",
+   "to": "P67",
+   "type": "attacks",
+   "why": "Says the list is not for shaming."
+  },
+  {
+   "from": "P70",
+   "to": "P78",
+   "type": "attacks",
+   "why": "Marked AI reports are valuable for security."
+  },
+  {
+   "from": "P72",
+   "to": "P70",
+   "type": "supports",
+   "why": "The project values LLM security analysis."
+  },
+  {
+   "from": "P71",
+   "to": "P70",
+   "type": "attacks",
+   "why": "An exemption can be sought later instead of now."
+  },
+  {
+   "from": "P78",
+   "to": "P92",
+   "type": "attacks",
+   "why": "LLM code is too risky to allow at all."
+  },
+  {
+   "from": "P79",
+   "to": "P78",
+   "type": "supports",
+   "why": "Review cannot reliably catch LLM errors."
+  },
+  {
+   "from": "P80",
+   "to": "P81",
+   "type": "supports",
+   "why": "Deskilling is another reason for a ban."
+  },
+  {
+   "from": "P86",
+   "to": "P78",
+   "type": "attacks",
+   "why": "Trusted maintainers can allow LLMs safely."
+  },
+  {
+   "from": "P87",
+   "to": "P78",
+   "type": "attacks",
+   "why": "A safety certifier sees no reliability harm."
+  },
+  {
+   "from": "P88",
+   "to": "P86",
+   "type": "attacks",
+   "why": "Trust in code judgement does not transfer to policy."
+  },
+  {
+   "from": "P82",
+   "to": "P81",
+   "type": "supports",
+   "why": "Safety outweighs project survival."
+  },
+  {
+   "from": "P84",
+   "to": "P83",
+   "type": "attacks",
+   "why": "Rejects the dichotomy between a ban and the project's existence."
+  },
+  {
+   "from": "P95",
+   "to": "P81",
+   "type": "supports",
+   "why": "Social friction costs exceed LLM benefits."
+  },
+  {
+   "from": "P92",
+   "to": "P25",
+   "type": "supports",
+   "why": "The compromise structure makes the policy balanced."
+  },
+  {
+   "from": "P93",
+   "to": "P91",
+   "type": "attacks",
+   "why": "Complex rules signal low reviewer trust."
+  },
+  {
+   "from": "P30",
+   "to": "P4",
+   "type": "attacks",
+   "why": "Prefers reliance on reviewer discussion over rules."
+  },
+  {
+   "from": "P103",
+   "to": "P102",
+   "type": "attacks",
+   "why": "Meetings are out of scope."
+  },
+  {
+   "from": "P108",
+   "to": "P22",
+   "type": "supports",
+   "why": "Shortcomings can be addressed after merging."
+  }
+ ],
+ "cruxes": [
+  {
+   "question": "Can LLM-authored code be reviewed and merged into the compiler without unacceptable risk to correctness and reliability?",
+   "sides": [
+    {
+     "answer": "No; LLM code is too unreliable and human review cannot reliably catch its errors, so any allowance is too much",
+     "points": [
+      "P78",
+      "P79",
+      "P80",
+      "P81",
+      "P82",
+      "P88"
+     ]
+    },
+    {
+     "answer": "Yes, under constraints such as reviewer pre-arrangement, low autonomy and soundness limits",
+     "points": [
+      "P32",
+      "P33",
+      "P86",
+      "P87",
+      "P91",
+      "P92"
+     ]
+    }
+   ],
+   "why_decisive": "Most arguments for a full ban versus the gated experiment rest on whether reviewed LLM code is safe enough; settling it removes the core technical dispute.",
+   "settles_by": "Empirical evidence: defect, revert and review-effort data on LLM-assisted PRs merged under the policy versus comparable human PRs."
+  },
+  {
+   "question": "Will the experimental allowance actually be revisable, or will it be permanent in practice?",
+   "sides": [
+    {
+     "answer": "Permanent in practice: changes need near-unanimous approval and the label lacks an end or criteria",
+     "points": [
+      "P12",
+      "P23",
+      "P35",
+      "P36",
+      "P37",
+      "P38",
+      "P39",
+      "P41"
+     ]
+    },
+    {
+     "answer": "Revisable: the text says it is non-permanent, and review and adjustment are expected or easier paths are coming",
+     "points": [
+      "P13",
+      "P40",
+      "P44",
+      "P89",
+      "P107"
+     ]
+    }
+   ],
+   "why_decisive": "Both the pro-ban side's fear of entrenchment and the demand for sunset clauses, interim status or a circuit breaker flow from this question.",
+   "settles_by": "Governance design and track record: the actual change procedure, whether a sunset or success criteria are added, and whether the planned committee materializes."
+  },
+  {
+   "question": "Should ethical, social and environmental objections to LLMs be within the scope of this policy?",
+   "sides": [
+    {
+     "answer": "Yes; excluding them sets them aside, manufactures consensus and alienates people",
+     "points": [
+      "P20",
+      "P21",
+      "P26",
+      "P95",
+      "P96"
+     ]
+    },
+    {
+     "answer": "No; the policy should address practical concerns like quality and burden, and ethics cannot be met short of a ban anyway",
+     "points": [
+      "P19",
+      "P22",
+      "P25"
+     ]
+    }
+   ],
+   "why_decisive": "The scope ruling determines whether the ban case is even admissible and whether the current consensus is seen as legitimate.",
+   "settles_by": "Normative judgement about the project's values and precedents for ethical commitments in its other policies."
+  },
+  {
+   "question": "Does adoption require consensus, and does the lack of consensus for a full ban settle the matter?",
+   "sides": [
+    {
+     "answer": "Yes; a community project can only pass policy by consensus, so the policy reflects what is politically possible",
+     "points": [
+      "P18",
+      "P19",
+      "P98"
+     ]
+    },
+    {
+     "answer": "No; consensus should not override what is right, and apparent consensus is an artifact of excluded arguments",
+     "points": [
+      "P20",
+      "P81",
+      "P85"
+     ]
+    }
+   ],
+   "why_decisive": "If consensus is binding, the full-ban position cannot prevail and the debate reduces to tuning the compromise.",
+   "settles_by": "Governance judgement about the project's decision rules (FCP, consensus norms)."
+  },
+  {
+   "question": "Who has authority to set this policy: the teams reviewing rust-lang/rust, or a project-wide body such as the Leadership Council?",
+   "sides": [
+    {
+     "answer": "The reviewing teams, scoped to the repo, without escalation",
+     "points": [
+      "P5",
+      "P6",
+      "P7",
+      "P8"
+     ]
+    },
+    {
+     "answer": "A project-wide body, because the policy effectively commits the whole project",
+     "points": [
+      "P9",
+      "P10",
+      "P11",
+      "P12",
+      "P96"
+     ]
+    }
+   ],
+   "why_decisive": "The procedural objections, calls to delay, and proposals for interim status all hinge on which body is legitimate.",
+   "settles_by": "The project's governance charter and judgement on whether the repo policy de facto binds the project."
+  },
+  {
+   "question": "Is a hard cap on the share of LLM PRs (the circuit breaker) justified given its effect on corporate and LLM-using contributors?",
+   "sides": [
+    {
+     "answer": "Justified: it protects non-LLM contributors, keeps the experiment bounded, and corporations must follow project rules",
+     "points": [
+      "P44",
+      "P45",
+      "P47",
+      "P53",
+      "P55",
+      "P58",
+      "P59",
+      "P60",
+      "P62"
+     ]
+    },
+    {
+     "answer": "Unjustified: it is arbitrary, marks LLM users as second-class, deters corporate investment and will not bring sides back to the table",
+     "points": [
+      "P43",
+      "P48",
+      "P49",
+      "P50",
+      "P51",
+      "P52",
+      "P61",
+      "P63"
+     ]
+    }
+   ],
+   "why_decisive": "The circuit breaker was a late change that reopened the corporate, welcome and changeability disputes; its fate largely determines whether the compromise holds.",
+   "settles_by": "Data on contributor composition and corporate contribution behavior, plus judgement on what the experiment's boundary should be."
+  },
+  {
+   "question": "Is the volume of LLM contributions large enough that a formal policy is better than reviewer discretion?",
+   "sides": [
+    {
+     "answer": "Yes; there is a flood of slop and no policy brings confusion and burnout",
+     "points": [
+      "P2",
+      "P3",
+      "P76",
+      "P101"
+     ]
+    },
+    {
+     "answer": "No; LLM contributions are few and quality-based reviewer judgement suffices, or the policy is worse than none",
+     "points": [
+      "P27",
+      "P30",
+      "P75"
+     ]
+    }
+   ],
+   "why_decisive": "It decides whether any policy is needed at all, framing every other question.",
+   "settles_by": "Counts of LLM-involved PRs and moderator and reviewer time spent on them."
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+  "source_url": "https://blog.rust-lang.org/inside-rust/2026/08/05/rust-langrust-is-adopting-an-llm-policy/",
+  "source_url_note": "Inferred from post slug in the page's edit link (content/inside-rust/rust-langrust-is-adopting-an-llm-policy.md) and date; no canonical tag in the HTML.",
+  "options": [
+    {"id": "O1", "label": "No policy / status quo", "description": "Keep the 'wild west' approach: unofficial, unpublished moderation notes; 'anything goes, as long as it's not obviously horrible'."},
+    {"id": "O2", "label": "Total ban", "description": "Ban LLMs altogether: 'No LLM-generated content, whether it be code or prose.'"},
+    {"id": "O3", "label": "Permissive / tool-neutral", "description": "Allow any LLM use considered pro-social: 'AI is a tool, just like other tools we use'."},
+    {"id": "O4", "label": "Public, written, restrictive-but-scoped policy (adopted)", "description": "Published policy for rust-lang/rust: LLMs fine to answer questions, analyze, distill, refine, check, suggest, review, but not to create; mandatory disclosure; LLM-generated code heavily restricted and held to a higher bar."}
+  ],
+  "cruxes": [
+    {"id": "K1", "statement": "Polished, well-tested PRs no longer reliably signal the author's effort, understanding, presence, or long-term commitment, undermining norms built on those signals.", "favours": ["O4", "O2"], "against": ["O3", "O1"], "source": "Section 'Technical products no longer indicate effort': 'With LLMs, none of these signals are reliable.'"},
+    {"id": "K2", "statement": "LLMs make code cheaper to write, worsening the existing shortage of review bandwidth, since review is mostly decision-making rather than bug-catching.", "favours": ["O4", "O2"], "against": ["O3", "O1"], "source": "Section 'Making code easier to write causes review issues': 'reviewing is made of decisions'."},
+    {"id": "K3", "statement": "Mechanically relaying review comments to and from an LLM wastes reviewers' time and breaches the trust that a real person is engaged.", "favours": ["O4", "O2"], "against": ["O3", "O1"], "source": "Section 'Mechanically copy-pasting LLM output is a waste of time': 'We want to hear your thoughts, not a machine's.'"},
+    {"id": "K4", "statement": "Unpublished, inconsistently enforced moderation rules conflict with being transparent and welcoming, because newcomers cannot know the rules.", "favours": ["O4"], "against": ["O1"], "source": "Sections 'Why was this policy created?' / 'So why a policy?': 'our rules were not published anywhere'."},
+    {"id": "K5", "statement": "LLMs can no longer be ignored, so the real choice is between unofficial moderation notes and a policy stood by publicly, not between policy and no policy.", "favours": ["O4"], "against": ["O1"], "source": "Section 'So why a policy?': 'Our choices are not \"no policy\" or \"policy\".'"},
+    {"id": "K6", "statement": "Rust governs by consensus with no benevolent dictator, and there is no (and likely never will be) consensus on acceptable AI use, ruling out either extreme.", "favours": ["O4"], "against": ["O2", "O3"], "source": "Section 'So why a policy?': 'Rust governance doesn't work that way.'"},
+    {"id": "K7", "statement": "Some LLM uses genuinely respect the community (translation, finding poor diagnostics, analyzing RFCs), so not all use should be barred.", "favours": ["O4", "O3"], "against": ["O2"], "source": "Section 'Why was this policy created?': 'Some of those uses respected our community'."},
+    {"id": "K8", "statement": "Shared values of building deep experts and maintaining an inclusive community ground a focus on human understanding rather than mere working artifacts.", "favours": ["O4"], "against": ["O3"], "source": "Sections 'So why a policy?' / 'General rules': 'the policy focuses on understanding'; 'No programmer tapes.'"},
+    {"id": "K9", "statement": "A bright-line disclosure rule lets moderators judge violations by actions rather than intent, even if some parts are unenforceable.", "favours": ["O4"], "against": ["O1"], "source": "Section 'Moderation rules': 'The goal is not to catch every violation'."},
+    {"id": "K10", "statement": "The policy should remain changeable and gather data on LLM contributions, since its rules are imperfect and a disliked written policy pushes governance improvement.", "favours": ["O4"], "against": [], "source": "Sections 'So why a policy?' / 'What next?': 'writing our rules down is better than not writing them down'."},
+    {"id": "K11", "statement": "Contributors should not be harassed or accused over suspected LLM use, and the burden of disclosing LLM generation lies with the author, not reviewers.", "favours": ["O4"], "against": [], "source": "Sections 'Moderation rules' / 'Reviewers': 'Style is not evidence; please do not accuse people'."}
+  ],
+  "decision": {
+    "summary": "Five Rust teams adopted a public LLM policy for the rust-lang/rust monorepo only (not an official project-wide stance on LLMs).",
+    "key_provisions": [
+      "LLMs fine to answer questions, analyze, distill, refine, check, suggest, review; not to create.",
+      "Disclosure required for public LLM content (machine translation, trivial changes, bug discovery, reviewing others' work); private use without disclosure is fine.",
+      "LLM-generated code allowed only if pre-arranged, non-critical, high-quality, well-tested, well-reviewed, with disclosure; tests mandatory; soundness-critical changes barred unless author is a domain expert (still strongly discouraged); docs and diagnostics are disallowed areas.",
+      "No one required to read LLM output or review LLM PRs; LLM review cannot substitute for human review.",
+      "Reviewers may close non-compliant PRs with no questions asked, pointing to #llm-mentoring; doubtful cases reported privately to moderation.",
+      "Harassment over LLM use prohibited.",
+      "Provisions make the policy easier to change; leadership council considering an LLM-policy sub-team."
+    ]
+  },
+  "decisive": [
+    {"crux": "K5", "why": "Framed the choice as unofficial notes versus a public policy, making a written public policy the answer."},
+    {"crux": "K4", "why": "Transparency and welcoming newcomers motivated formalizing the hidden rules publicly."},
+    {"crux": "K6", "why": "Consensus governance and lack of agreement ruled out both a full ban and a permissive stance."},
+    {"crux": "K1", "why": "Primary harm (loss of effort/understanding signal) motivating strict restrictions on LLM-created content."},
+    {"crux": "K2", "why": "Review-bandwidth burden motivating restrictions and reviewer opt-out."},
+    {"crux": "K3", "why": "Copy-paste harm motivating the disclosure and no-unmarked-LLM-comments rules."}
+  ]
+}

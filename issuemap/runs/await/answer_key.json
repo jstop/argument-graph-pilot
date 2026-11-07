@@ -1,0 +1,366 @@
+{
+  "source_urls": {
+    "reached": [
+      "https://paper.dropbox.com/doc/Await-Syntax-Write-Up--AcIbhZ1tPTCloXb2fmFpBTt~Ag-t9NlOSeI4RQ8AINsaSSyJ (archive.org copy, partial; local copy issuemap/data/web/2.html)",
+      "https://internals.rust-lang.org/t/await-syntax-discussion-summary/9914",
+      "https://internals.rust-lang.org/t/a-final-proposal-for-await-syntax/10021",
+      "https://without.boats/blog/await-decision/",
+      "https://without.boats/blog/await-decision-ii/"
+    ],
+    "not_reached": [
+      "https://paper.dropbox.com/doc/Await-Syntax-Write-Up--AcIbhZ1tPTCloXb2fmFpBTt~Ag-t9NlOSeI4RQ8AINsaSSyJ -- everything from the 'Prefix vs Postfix' heading onward (needed JavaScript in the archived copy)"
+    ],
+    "note": "Write-up reached only partially, through an archive.org copy: the intro, 'The Error Handling Problem', 'From Four Solutions to Two' (four solution categories), 'The Order of Operations Solution is too surprising', and 'Familiarity argues strongly for using an await keyword'. The 'Prefix vs Postfix' section and everything after it could not be reached. Cruxes the reached part does not cover are sourced to the forum thread and the without.boats posts."
+  },
+  "reached_writeup": "partial",
+  "options": [
+    {
+      "id": "O1",
+      "name": "Prefix await with mandatory delimiters",
+      "example": "await { fut }",
+      "source": "forum thread replies (prefix with delimiters)",
+      "writeup_category": "C2"
+    },
+    {
+      "id": "O2",
+      "name": "Prefix await with unusual (tighter) precedence, or prefix with sugar such as await?",
+      "example": "await fut? / (await fut)?",
+      "source": "final proposal thread: (await x)? problem",
+      "writeup_category": "C1/C2"
+    },
+    {
+      "id": "O3",
+      "name": "Postfix field-like keyword (dot await)",
+      "example": "fut.await",
+      "source": "boats: 'dot await' postfix syntax",
+      "writeup_category": "C3"
+    },
+    {
+      "id": "O4",
+      "name": "Postfix method-like",
+      "example": "fut.await()",
+      "source": "boats: method-like syntax section",
+      "writeup_category": "C3"
+    },
+    {
+      "id": "O5",
+      "name": "Postfix macro-like",
+      "example": "fut.await!()",
+      "source": "boats: macro-like syntax section",
+      "writeup_category": "C3"
+    },
+    {
+      "id": "O6",
+      "name": "Postfix space keyword",
+      "example": "fut await",
+      "source": "boats: 'space await' the most viable alternative",
+      "writeup_category": "C3"
+    },
+    {
+      "id": "O7",
+      "name": "Sigil-based postfix",
+      "example": "fut@await, fut#await, fut->await",
+      "source": "boats/forum: @await, #await rejected",
+      "writeup_category": "C4"
+    },
+    {
+      "id": "O8",
+      "name": "Stabilize the await!() macro as-is",
+      "example": "await!(fut)",
+      "source": "forum OP: team does not want to stabilize await!",
+      "writeup_category": "(status quo macro from RFC)"
+    }
+  ],
+  "cruxes": [
+    {
+      "id": "K1",
+      "statement": "Because most awaited futures return Result and are unwrapped with ?, having to write (await future)? is undesirable; this 'error handling problem' is the primary problem.",
+      "favours": [
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O1",
+        "O2",
+        "O8"
+      ],
+      "source": "write-up, 'The Error Handling Problem': 'remains the primary problem that we are trying to resolve'"
+    },
+    {
+      "id": "K2",
+      "statement": "The same parenthesisation problem applies, less commonly, to methods chained on the awaited value (e.g. .context).",
+      "favours": [
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O1",
+        "O2",
+        "O8"
+      ],
+      "source": "write-up, 'The Error Handling Problem': '(await future).context(\"An error occurred.\")?'"
+    },
+    {
+      "id": "K3",
+      "statement": "Await yields control, so it should not look like an ordinary method call, which cannot do that.",
+      "favours": [
+        "O1",
+        "O2",
+        "O3",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O4"
+      ],
+      "source": "boats: 'Await is not a method because it yields control'"
+    },
+    {
+      "id": "K4",
+      "statement": "Macros only expand to user-writable code, so await cannot honestly be a macro; the macro implementation also gives bad diagnostics and lets yield leak into async fns.",
+      "favours": [
+        "O1",
+        "O2",
+        "O3",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O5",
+        "O8"
+      ],
+      "source": "boats: macro-like section; forum: 'cannot be implemented as a macro'"
+    },
+    {
+      "id": "K5",
+      "statement": "Dot await looks like a field access, which can confuse readers about what it does.",
+      "favours": [
+        "O1",
+        "O2",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O3"
+      ],
+      "source": "boats: 'the most serious downside of the dot await syntax'"
+    },
+    {
+      "id": "K6",
+      "statement": "The field-access confusion is reduced because await is a reserved keyword that syntax highlighting distinguishes and its meaning is distinct.",
+      "favours": [
+        "O3"
+      ],
+      "disfavours": [],
+      "source": "boats: 'differentiated by any syntax highlighting system'"
+    },
+    {
+      "id": "K7",
+      "statement": "Familiarity with async/await in other languages matters, so the syntax should contain the await keyword, which argues strongly against sigils.",
+      "favours": [
+        "O1",
+        "O2",
+        "O3",
+        "O4",
+        "O5",
+        "O6"
+      ],
+      "disfavours": [
+        "O7"
+      ],
+      "source": "write-up, 'Familiarity argues strongly for using an await keyword'"
+    },
+    {
+      "id": "K8",
+      "statement": "New punctuation sigils add line noise, use scarce ASCII characters, raise learning cost, and hurt accessibility.",
+      "favours": [
+        "O3",
+        "O6"
+      ],
+      "disfavours": [
+        "O7"
+      ],
+      "source": "boats II: reusing '.' judged 'less costly' than new sigils"
+    },
+    {
+      "id": "K9",
+      "statement": "Space-separated postfix await groups poorly visually and harms compiler error recovery with missing semicolons.",
+      "favours": [
+        "O3",
+        "O7"
+      ],
+      "disfavours": [
+        "O6"
+      ],
+      "source": "boats: 'It does not visually group well'"
+    },
+    {
+      "id": "K10",
+      "statement": "The syntax should allow later generalisation of dot-keywords to other expression keywords like match.",
+      "favours": [
+        "O3"
+      ],
+      "disfavours": [
+        "O6",
+        "O1",
+        "O2"
+      ],
+      "source": "boats: foo.bar(..).match { ... } future possibility"
+    },
+    {
+      "id": "K11",
+      "statement": "The syntax must be forward compatible with planned extensions such as for-await loops over streams.",
+      "favours": [],
+      "disfavours": [],
+      "source": "forum OP: compatible with 'processing streams with for loops'"
+    },
+    {
+      "id": "K12",
+      "statement": "Await points should be highly visible and hard to miss when reading code.",
+      "favours": [
+        "O1",
+        "O2",
+        "O7"
+      ],
+      "disfavours": [
+        "O3",
+        "O6"
+      ],
+      "source": "forum reply: 'It is very easy to miss the await'"
+    },
+    {
+      "id": "K13",
+      "statement": "Making prefix await bind tighter than ? or . would break the expectation that postfix operators bind tighter than prefixes, so it would be too surprising.",
+      "favours": [
+        "O1",
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O2 (order-of-operations variant / C1)"
+      ],
+      "source": "write-up, 'The Order of Operations Solution is too surprising'"
+    },
+    {
+      "id": "K14",
+      "statement": "The debate had deadlocked and shipping in Rust 1.37 required making a call by team consensus weighting.",
+      "favours": [
+        "O3"
+      ],
+      "disfavours": [],
+      "source": "boats: 'the discussion had reached a standstill'"
+    },
+    {
+      "id": "K15",
+      "statement": "Users implicitly expect . and ? to share one precedence level, so a prefix operator that splits them (as in builder chains) parses surprisingly.",
+      "favours": [
+        "O3",
+        "O4",
+        "O5",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O2 (C1)"
+      ],
+      "source": "write-up: '. and ? have the same precedence ... higher than prefixes'"
+    },
+    {
+      "id": "K16",
+      "statement": "The await!(expr) macro from RFC 2394 was a placeholder and should not be the final syntax.",
+      "favours": [
+        "O1",
+        "O2",
+        "O3",
+        "O4",
+        "O6",
+        "O7"
+      ],
+      "disfavours": [
+        "O8"
+      ],
+      "source": "write-up intro: macro 'not intended to be the final syntax'; forum OP"
+    }
+  ],
+  "decisive": [
+    {
+      "crux": "K13",
+      "note": "Write-up: consensus to rule out the Order of Operations Solution (C1)."
+    },
+    {
+      "crux": "K7",
+      "note": "Write-up: consensus to rule out sigil syntaxes (C4) on familiarity grounds."
+    },
+    {
+      "crux": "K1",
+      "note": "Postfix chosen over prefix primarily for composability with ? (and methods)."
+    },
+    {
+      "crux": "K2",
+      "note": "Same: 'primary argument in favor of postfix'."
+    },
+    {
+      "crux": "K3",
+      "note": "Rules out method syntax."
+    },
+    {
+      "crux": "K4",
+      "note": "Rules out macro syntax; macro expansion treated as a bug."
+    },
+    {
+      "crux": "K8",
+      "note": "Rules out sigils; stated main reason for '.' over '@await' in Update post."
+    },
+    {
+      "crux": "K9",
+      "note": "Space await rejected; its downsides judged 'more bothersome' than dot await's."
+    },
+    {
+      "crux": "K10",
+      "note": "Supports dot over space, though Update post says it is not made inevitable."
+    },
+    {
+      "crux": "K5",
+      "note": "Acknowledged as the most serious downside, judged outweighed (mitigated by K6)."
+    },
+    {
+      "crux": "K14",
+      "note": "Standstill plus 1.37 deadline forced a decision; 'least imperfect' option."
+    }
+  ],
+  "writeup_solution_categories": [
+    {
+      "id": "C1",
+      "name": "Order of Operations Solution",
+      "desc": "standard prefix await that binds tighter than ? (and possibly .)",
+      "status": "ruled out by write-up"
+    },
+    {
+      "id": "C2",
+      "name": "Syntactic Sugar Solution",
+      "desc": "prefix await with a variation (sugar) avoiding parens",
+      "status": "remaining"
+    },
+    {
+      "id": "C3",
+      "name": "Postfix Keyword Solution",
+      "desc": "postfix keyword syntax",
+      "status": "remaining"
+    },
+    {
+      "id": "C4",
+      "name": "Postfix Sigil Solution",
+      "desc": "postfix sigil analogous to ?, most commonly @",
+      "status": "ruled out by write-up"
+    }
+  ]
+}

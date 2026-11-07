@@ -1,0 +1,52 @@
+{
+  "hash_ok": true,
+  "scale": "2 = clearly identified as a point of disagreement or key consideration, 1 = touched on or partly, 0 = missing",
+  "per_crux": [
+    {"id":"K1","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":2,"note":"A crux 4 asks directly whether prefix await can work acceptably with ?. In B's Cruxes, ? only comes up in passing inside crux 1, but B's Background lays out the (await fut)? problem clearly."},
+    {"id":"K2","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":"Both make chaining after await their crux 1."},
+    {"id":"K3","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":1,"note":"A crux 5 says .await() looks like a method 'though await is special control flow'. B names the method look-alike problem but never says that await yields control, which a method cannot do."},
+    {"id":"K4","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":2,"note":"A's Cruxes argue macros are not first-class for control flow, and A's point list says await 'cannot be an ordinary library macro'. B's Cruxes only mention the macro look-alike, but its arguments say 'it can't be written in user code'. Neither covers bad diagnostics or yield leaking into async fns."},
+    {"id":"K5","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":"Both name the field-access look-alike explicitly in their Cruxes."},
+    {"id":"K6","A_cruxes_section":1,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":2,"note":"A gives 'users quickly learn .await is not a field' and puts highlighting under the visibility crux, not tied to the field confusion. B's options list says .await is 'still a keyword, highlighted as one', but not in its Cruxes."},
+    {"id":"K7","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":1,"note":"Both make familiarity a crux but frame it as prefix vs postfix rather than keyword vs sigil. A's point list does have 'sigils are effectively ruled out' for lacking the word await. B never ties familiarity to rejecting sigils."},
+    {"id":"K8","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":2,"note":"A's Cruxes give only the 'too terse/invisible' objection to sigils. Elsewhere both outputs mention line noise, and A also mentions the limited sigil budget."},
+    {"id":"K9","A_cruxes_section":0,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":2,"note":"Both outputs say space await 'breaks visual grouping', but outside their Cruxes. Neither mentions compiler error recovery."},
+    {"id":"K10","A_cruxes_section":0,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":0,"note":"A's point list mentions 'postfix match/if' and a 'family of postfix operators' only in passing."},
+    {"id":"K11","A_cruxes_section":0,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":0,"note":"A's point list has 'awkward for stream iteration and async for loops' and 'stream await syntax is a separate, later question'."},
+    {"id":"K12","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":"Both make visibility of await points a crux."},
+    {"id":"K13","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":1,"note":"A crux 4 says useful precedence is unintuitive because adjacent tokens are expected to bind tighter. B gives this only as a one-clause aside on the useful-precedence option ('goes against the whitespace intuition')."},
+    {"id":"K14","A_cruxes_section":1,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":1,"note":"A crux 6 mentions delay to 'an already late feature', and A's point list notes 'no consensus'. B's Background mentions the lock with no consensus and a decision made elsewhere. Neither mentions the 1.37 deadline or that the team made the call."},
+    {"id":"K15","A_cruxes_section":1,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":1,"note":"A covers prefix precedence being 'consistent or useful but not both' and postfix giving left-to-right order. B mentions ? and await sitting on opposite sides, and field-like precedence. Neither states the shared . and ? precedence point."},
+    {"id":"K16","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":"Both have a ship-provisional-macro-vs-decide-now crux."}
+  ],
+  "totals": {"A_cruxes_section":20,"A_anywhere":27,"B_cruxes_section":12,"B_anywhere":23,"max_possible":32},
+  "decisive": {
+    "items": [
+      {"id":"K13","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":1,"note":"Ruled out the order-of-operations solution. Only A makes it a crux."},
+      {"id":"K7","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":1,"note":"Both give familiarity as a prefix argument. Only A's point list links it to excluding sigils."},
+      {"id":"K1","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":2,"note":""},
+      {"id":"K2","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":""},
+      {"id":"K3","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":1,"note":""},
+      {"id":"K4","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":1,"B_anywhere":2,"note":""},
+      {"id":"K8","A_cruxes_section":1,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":2,"note":""},
+      {"id":"K9","A_cruxes_section":0,"A_anywhere":2,"B_cruxes_section":0,"B_anywhere":2,"note":""},
+      {"id":"K10","A_cruxes_section":0,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":0,"note":""},
+      {"id":"K5","A_cruxes_section":2,"A_anywhere":2,"B_cruxes_section":2,"B_anywhere":2,"note":"Both name it, but neither says it was judged outweighed."},
+      {"id":"K14","A_cruxes_section":1,"A_anywhere":1,"B_cruxes_section":0,"B_anywhere":1,"note":""}
+    ],
+    "totals": {"A_cruxes_section":14,"A_anywhere":20,"B_cruxes_section":8,"B_anywhere":16,"max_possible":22}
+  },
+  "extra_cruxes": [
+    {"output":"A","crux":"7. One await form or both a prefix and a postfix form?","judgement":"valid","reason":"Really debated in the thread, but it did not decide the outcome."},
+    {"output":"A","crux":"8. Should await be explicit at all, or implicit/statement-level?","judgement":"doubtful","reason":"Implicit await was a fringe position and, per B, ruled out of scope by the moderators. Treating it as a crux overstates it."},
+    {"output":"A","crux":"3 (part): Rust's lazy, poll-based semantics weaken the precedent from other languages","judgement":"valid","reason":"Argued on both sides. It is not in the key."},
+    {"output":"B","crux":"3 (part): internal consistency, where Rust's laziness and different futures argue against copying other languages","judgement":"valid","reason":"Same point as A's. Only its familiarity half is in the key."},
+    {"output":"B","crux":"1 (part): whether existing evidence from C# and Rust repos is biased by the syntax people already had","judgement":"valid","reason":"A real sub-dispute about evidence. A also covers it, in crux 1."}
+  ],
+  "errors": [
+    "No clear factual errors or misattributions could be detected against the key in either output.",
+    "Omission (both outputs): neither says the outcome was postfix .await, decided by the lang team for Rust 1.37, or that field-access confusion was accepted as the most serious but outweighed downside. B only hints at it ('implies it is postfix'). A gives no outcome at all.",
+    "A's 'All points' counts of claims behind each point cannot be checked against the key."
+  ],
+  "verdict": "A's Cruxes section covers more of the key's cruxes than B's (20 vs 12 of 32 overall, 14 vs 8 of 22 decisive) and is the only one that names the precedence surprise (K13) that ruled out prefix-with-useful-precedence; across their whole text the gap narrows to 27 vs 23. Allowing for length, B at about 6.8 KB gives an engineer a clearer, faster picture of where the disagreement lay, with most decisive considerations in its arguments section, while A at about 45 KB is more complete but its huge unranked claim list is hard to use and it includes a doubtful implicit-await crux."
+}

@@ -1,0 +1,36 @@
+{
+  "hash_ok": true,
+  "per_crux": [
+    {"id": "K1", "A_cruxes_section": 0, "A_anywhere": 0, "B_cruxes_section": 0, "B_anywhere": 0, "note": "Neither covers polished PRs no longer signalling effort or understanding; both only mention 'low-effort slop'."},
+    {"id": "K2", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 0, "note": "A crux 7 cites wasted reviewer time and maintainer burnout, and its point list cites limited review capacity; B mentions the slop flood but not review bandwidth."},
+    {"id": "K3", "A_cruxes_section": 0, "A_anywhere": 0, "B_cruxes_section": 0, "B_anywhere": 0, "note": "Neither discusses relaying review comments through an LLM."},
+    {"id": "K4", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 1, "note": "A crux 7: no policy brings confusion and distrust; A also notes looser rules for members would feel unfriendly to newcomers. B: 'any guidance is better than the current confusion' (positions, not Cruxes)."},
+    {"id": "K5", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 1, "note": "Both partly: some policy beats no policy, but framed as policy vs none rather than unofficial notes vs a public policy; B only outside Cruxes."},
+    {"id": "K6", "A_cruxes_section": 2, "A_anywhere": 2, "B_cruxes_section": 1, "B_anywhere": 2, "note": "A crux 4 is explicitly about consensus. B crux 4 mentions no consensus for a ban; its positions section names consensus governance ('art of the possible')."},
+    {"id": "K7", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 1, "note": "A crux 1 'yes under constraints / low-autonomy uses'; points on valuable LLM security analysis. B lists allowed uses (review, lookup) and admits it bans some valid uses."},
+    {"id": "K8", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 0, "note": "A crux 1 has deskilling / eroding human skill and judgement, which touches on human understanding; B has nothing."},
+    {"id": "K9", "A_cruxes_section": 1, "A_anywhere": 1, "B_cruxes_section": 2, "B_anywhere": 2, "note": "B crux 3 sets a clear, easy-to-moderate rule against quality-based discretion. A has this only indirectly (hard rules vs guidelines in crux 7; 'easy to moderate' in the point list)."},
+    {"id": "K10", "A_cruxes_section": 2, "A_anywhere": 2, "B_cruxes_section": 2, "B_anywhere": 2, "note": "Both make revisability/amendability an explicit crux (A crux 2; B cruxes 1-2)."},
+    {"id": "K11", "A_cruxes_section": 0, "A_anywhere": 1, "B_cruxes_section": 0, "B_anywhere": 1, "note": "A point: treating an honestly disclosed AI PR as an instant CoC violation is untenable. B: moral judgements about LLM users ruled off-limits. Neither covers harassment or burden of disclosure directly."}
+  ],
+  "totals": {"A_cruxes_section": 10, "A_anywhere": 11, "B_cruxes_section": 5, "B_anywhere": 10, "max_possible_each": 22},
+  "extra_cruxes": {
+    "note": "The key comes from the blog post explaining the adopted policy; both outputs summarise the PR thread, so thread-specific disputes are missing from the key but can still be real.",
+    "A": [
+      {"crux": "Can reviewed LLM-authored code be merged without unacceptable risk to compiler reliability? (crux 1)", "judgement": "valid"},
+      {"crux": "Should ethical/social/environmental objections be in scope? (crux 3)", "judgement": "valid"},
+      {"crux": "Who has authority: the rust-lang/rust reviewing teams or the Leadership Council? (crux 5)", "judgement": "valid"},
+      {"crux": "Is the 50% circuit breaker justified given its effect on corporate/LLM-using contributors? (crux 6)", "judgement": "valid"}
+    ],
+    "B": [
+      {"crux": "Is the 'experiment' really an experiment or permanent in practice? (crux 1; overlaps K10)", "judgement": "valid"},
+      {"crux": "Do ethical concerns belong in the policy at all? (crux 4)", "judgement": "valid"},
+      {"crux": "How much should corporate contributors' tooling count? (crux 5)", "judgement": "valid"}
+    ]
+  },
+  "errors": [
+    "No clear factual errors or misattributions detectable against the key.",
+    "Minor imprecision (B): says soundness-critical code is 'excluded'; the key's final provision bars it unless the author is a domain expert (still strongly discouraged). This may describe an earlier draft."
+  ],
+  "verdict": "B is the more useful read for an engineer: in about 965 words it says who held each position and gives five crisp, attributed cruxes, so it scores nearly as well 'anywhere' (10 vs 11) at roughly a quarter of A's length. A's Cruxes section covers more of the key (10 vs 5), but its long unattributed claim lists and 100+ line point dump make the disagreement harder to see, so its extra coverage costs a lot of reading."
+}

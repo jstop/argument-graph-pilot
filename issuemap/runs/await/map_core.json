@@ -1,0 +1,1432 @@
+{
+ "edges": [
+  {
+   "from": "P3",
+   "to": "P1",
+   "type": "attacks",
+   "why": "Knowingly stabilizing a temporary syntax creates technical debt."
+  },
+  {
+   "from": "P4",
+   "to": "P1",
+   "type": "attacks",
+   "why": "The try!() precedent was costly, undermining the macro-first plan."
+  },
+  {
+   "from": "P5",
+   "to": "P1",
+   "type": "supports",
+   "why": "Existing control-flow macros are precedent for await!()."
+  },
+  {
+   "from": "P6",
+   "to": "P1",
+   "type": "attacks",
+   "why": "A stable await!() would block await as a keyword operator."
+  },
+  {
+   "from": "P7",
+   "to": "P6",
+   "type": "attacks",
+   "why": "A lang-item macro keeps await reserved and a transition possible."
+  },
+  {
+   "from": "P8",
+   "to": "P6",
+   "type": "attacks",
+   "why": "The keyword could be unreserved or re-reserved later."
+  },
+  {
+   "from": "P9",
+   "to": "P8",
+   "type": "attacks",
+   "why": "await must stay reserved in Rust 2018."
+  },
+  {
+   "from": "P10",
+   "to": "P1",
+   "type": "attacks",
+   "why": "Macro syntax conflicts with await being a keyword."
+  },
+  {
+   "from": "P11",
+   "to": "P17",
+   "type": "attacks",
+   "why": "await! would itself need compiler magic, so it is not just reuse."
+  },
+  {
+   "from": "P12",
+   "to": "P11",
+   "type": "attacks",
+   "why": "Magic macros already exist in std."
+  },
+  {
+   "from": "P12",
+   "to": "P13",
+   "type": "attacks",
+   "why": "Magic std macros show macros can be first-class enough."
+  },
+  {
+   "from": "P13",
+   "to": "P1",
+   "type": "attacks",
+   "why": "Macros are not first-class for central control flow."
+  },
+  {
+   "from": "P13",
+   "to": "P157",
+   "type": "attacks",
+   "why": "The ! in .await!() wrongly signals ordinary macro expansion."
+  },
+  {
+   "from": "P14",
+   "to": "P1",
+   "type": "attacks",
+   "why": "A macro is asymmetric with the async keyword."
+  },
+  {
+   "from": "P15",
+   "to": "P1",
+   "type": "supports",
+   "why": "await!() is unambiguous and simple."
+  },
+  {
+   "from": "P16",
+   "to": "P15",
+   "type": "attacks",
+   "why": "await!() is noisy across many awaits."
+  },
+  {
+   "from": "P17",
+   "to": "P1",
+   "type": "supports",
+   "why": "A macro adds no new syntax or tooling."
+  },
+  {
+   "from": "P18",
+   "to": "P1",
+   "type": "supports",
+   "why": "Users already know and use await!()."
+  },
+  {
+   "from": "P19",
+   "to": "P1",
+   "type": "attacks",
+   "why": "await!() is not a viable final syntax."
+  },
+  {
+   "from": "P20",
+   "to": "P1",
+   "type": "attacks",
+   "why": "It is unclear what users gain from a macro."
+  },
+  {
+   "from": "P21",
+   "to": "P1",
+   "type": "attacks",
+   "why": "await should be a real keyword operator, not a macro."
+  },
+  {
+   "from": "P22",
+   "to": "P21",
+   "type": "attacks",
+   "why": "Dedicated keyword syntax bloats the language."
+  },
+  {
+   "from": "P24",
+   "to": "P23",
+   "type": "attacks",
+   "why": "An async-only contextual keyword is impractical with hygiene."
+  },
+  {
+   "from": "P153",
+   "to": "P2",
+   "type": "attacks",
+   "why": "Depending on postfix macros needs a new RFC and delays await."
+  },
+  {
+   "from": "P154",
+   "to": "P2",
+   "type": "attacks",
+   "why": "Postfix macros may never exist."
+  },
+  {
+   "from": "P37",
+   "to": "P25",
+   "type": "attacks",
+   "why": "Implicit await moves the explicit marker rather than removing it."
+  },
+  {
+   "from": "P25",
+   "to": "P43",
+   "type": "attacks",
+   "why": "Statement-level implicit await still hides suspension points."
+  },
+  {
+   "from": "P26",
+   "to": "P38",
+   "type": "attacks",
+   "why": "Explicit await fits Rust's explicitness."
+  },
+  {
+   "from": "P27",
+   "to": "P38",
+   "type": "attacks",
+   "why": "C# rejected implicit await after COM+ problems."
+  },
+  {
+   "from": "P36",
+   "to": "P37",
+   "type": "attacks",
+   "why": "Lazy futures require distinguishing construction from awaiting."
+  },
+  {
+   "from": "P47",
+   "to": "P36",
+   "type": "supports",
+   "why": "Inert poll-driven futures make construction distinct from awaiting."
+  },
+  {
+   "from": "P30",
+   "to": "P29",
+   "type": "attacks",
+   "why": "IDEs can still tell types under implicit await."
+  },
+  {
+   "from": "P32",
+   "to": "P31",
+   "type": "attacks",
+   "why": "Breaking-change concerns are avoidable."
+  },
+  {
+   "from": "P34",
+   "to": "P33",
+   "type": "attacks",
+   "why": "Async blocks still work in non-async contexts."
+  },
+  {
+   "from": "P42",
+   "to": "P41",
+   "type": "attacks",
+   "why": "A visible await revealed a real performance problem."
+  },
+  {
+   "from": "P41",
+   "to": "P46",
+   "type": "supports",
+   "why": "Async is like IO, which is not specially marked."
+  },
+  {
+   "from": "P44",
+   "to": "P43",
+   "type": "attacks",
+   "why": "Partial-implicit await is fragile under refactoring."
+  },
+  {
+   "from": "P46",
+   "to": "P45",
+   "type": "attacks",
+   "why": "Holding state across awaits is like ordinary calls; no special prominence needed."
+  },
+  {
+   "from": "P45",
+   "to": "P170",
+   "type": "supports",
+   "why": "If await points must be visible, a near-invisible sigil is bad."
+  },
+  {
+   "from": "P175",
+   "to": "P45",
+   "type": "attacks",
+   "why": "Unobtrusive await is a virtue since async is marked once."
+  },
+  {
+   "from": "P47",
+   "to": "P48",
+   "type": "supports",
+   "why": "Inert futures underlie the lazy design."
+  },
+  {
+   "from": "P49",
+   "to": "P48",
+   "type": "attacks",
+   "why": "Other languages favor eager execution."
+  },
+  {
+   "from": "P47",
+   "to": "P50",
+   "type": "supports",
+   "why": "Rust futures being lazy is the semantic difference cited."
+  },
+  {
+   "from": "P51",
+   "to": "P50",
+   "type": "attacks",
+   "why": "Semantic differences do not matter to users."
+  },
+  {
+   "from": "P50",
+   "to": "P55",
+   "type": "attacks",
+   "why": "Different semantics undercut the prefix precedent."
+  },
+  {
+   "from": "P53",
+   "to": "P55",
+   "type": "attacks",
+   "why": "Familiarity should not justify a suboptimal choice."
+  },
+  {
+   "from": "P56",
+   "to": "P55",
+   "type": "supports",
+   "why": "Familiar syntax attracts developers from other languages."
+  },
+  {
+   "from": "P59",
+   "to": "P55",
+   "type": "supports",
+   "why": "C# research found prefix most intuitive."
+  },
+  {
+   "from": "P240",
+   "to": "P55",
+   "type": "supports",
+   "why": "Prefix makes async code look like sync code."
+  },
+  {
+   "from": "P241",
+   "to": "P240",
+   "type": "attacks",
+   "why": "The RFC left syntax open."
+  },
+  {
+   "from": "P242",
+   "to": "P55",
+   "type": "attacks",
+   "why": "Internal consistency with Rust matters more than familiarity."
+  },
+  {
+   "from": "P54",
+   "to": "P57",
+   "type": "attacks",
+   "why": "C# lacks ?, so its experience understates parenthesization."
+  },
+  {
+   "from": "P60",
+   "to": "P57",
+   "type": "attacks",
+   "why": "C# chaining data is biased by the prefix syntax itself."
+  },
+  {
+   "from": "P61",
+   "to": "P57",
+   "type": "attacks",
+   "why": "C# does have heavily chained code."
+  },
+  {
+   "from": "P62",
+   "to": "P57",
+   "type": "attacks",
+   "why": "Rust chains more than C#."
+  },
+  {
+   "from": "P63",
+   "to": "P57",
+   "type": "attacks",
+   "why": "Real C# code shows awkward parenthesized prefix awaits."
+  },
+  {
+   "from": "P57",
+   "to": "P65",
+   "type": "supports",
+   "why": "C# users rarely chain after await."
+  },
+  {
+   "from": "P58",
+   "to": "P174",
+   "type": "attacks",
+   "why": "C# users still like a heavyweight keyword, not a sigil."
+  },
+  {
+   "from": "P64",
+   "to": "P70",
+   "type": "attacks",
+   "why": "Long await chains are harmful."
+  },
+  {
+   "from": "P65",
+   "to": "P70",
+   "type": "attacks",
+   "why": "Chaining awaits is rarely needed."
+  },
+  {
+   "from": "P70",
+   "to": "P65",
+   "type": "attacks",
+   "why": "Method chaining is idiomatic Rust."
+  },
+  {
+   "from": "P66",
+   "to": "P65",
+   "type": "supports",
+   "why": "Chains can be avoided by other means."
+  },
+  {
+   "from": "P67",
+   "to": "P65",
+   "type": "supports",
+   "why": "Statistics show chained control-flow operators are rare."
+  },
+  {
+   "from": "P68",
+   "to": "P67",
+   "type": "attacks",
+   "why": "Existing-code statistics are weak evidence."
+  },
+  {
+   "from": "P69",
+   "to": "P145",
+   "type": "supports",
+   "why": "More data and rewrites are needed before deciding."
+  },
+  {
+   "from": "P71",
+   "to": "P64",
+   "type": "attacks",
+   "why": "Overly long chains can be linted while lets remain available."
+  },
+  {
+   "from": "P75",
+   "to": "P64",
+   "type": "attacks",
+   "why": "Debugging objections applied to ? too."
+  },
+  {
+   "from": "P76",
+   "to": "P64",
+   "type": "supports",
+   "why": "Multiple awaits in one expression are suspect."
+  },
+  {
+   "from": "P73",
+   "to": "P74",
+   "type": "attacks",
+   "why": "Let bindings are idiomatic and helpful."
+  },
+  {
+   "from": "P74",
+   "to": "P70",
+   "type": "supports",
+   "why": "Prefix forces temporaries that postfix removes."
+  },
+  {
+   "from": "P77",
+   "to": "P66",
+   "type": "attacks",
+   "why": "Combinators are no substitute for await."
+  },
+  {
+   "from": "P78",
+   "to": "P66",
+   "type": "supports",
+   "why": "Combinators remain useful alongside await."
+  },
+  {
+   "from": "P77",
+   "to": "P78",
+   "type": "attacks",
+   "why": "Combinators cannot borrow across yields."
+  },
+  {
+   "from": "P126",
+   "to": "P70",
+   "type": "attacks",
+   "why": "Imperative style should come first, not chaining."
+  },
+  {
+   "from": "P127",
+   "to": "P126",
+   "type": "attacks",
+   "why": "Rust supports functional style too."
+  },
+  {
+   "from": "P128",
+   "to": "P70",
+   "type": "supports",
+   "why": "Postfix fits Rust's combinator style."
+  },
+  {
+   "from": "P129",
+   "to": "P70",
+   "type": "supports",
+   "why": "Real-code rewrites found postfix more natural."
+  },
+  {
+   "from": "P130",
+   "to": "P129",
+   "type": "attacks",
+   "why": "The rewrite tested only one postfix variant."
+  },
+  {
+   "from": "P234",
+   "to": "P243",
+   "type": "attacks",
+   "why": "Prefix await makes multiple awaits parenthesis-heavy."
+  },
+  {
+   "from": "P235",
+   "to": "P234",
+   "type": "attacks",
+   "why": "Prefix chaining issues are minor."
+  },
+  {
+   "from": "P239",
+   "to": "P238",
+   "type": "attacks",
+   "why": "Extracting helpers scales badly."
+  },
+  {
+   "from": "P84",
+   "to": "P83",
+   "type": "supports",
+   "why": "Futures of Results are the common case."
+  },
+  {
+   "from": "P85",
+   "to": "P83",
+   "type": "attacks",
+   "why": "Useful precedence surprises readers."
+  },
+  {
+   "from": "P83",
+   "to": "P82",
+   "type": "attacks",
+   "why": "Useful precedence needs fewer parentheses than obvious precedence."
+  },
+  {
+   "from": "P86",
+   "to": "P82",
+   "type": "attacks",
+   "why": "Any fixed prefix precedence must be learned."
+  },
+  {
+   "from": "P86",
+   "to": "P83",
+   "type": "attacks",
+   "why": "Any fixed prefix precedence must be learned."
+  },
+  {
+   "from": "P87",
+   "to": "P82",
+   "type": "supports",
+   "why": "await? sugar makes obvious precedence workable."
+  },
+  {
+   "from": "P88",
+   "to": "P87",
+   "type": "attacks",
+   "why": "await? is special-cased and scales poorly."
+  },
+  {
+   "from": "P90",
+   "to": "P89",
+   "type": "attacks",
+   "why": "Implementing Future for Result is backwards."
+  },
+  {
+   "from": "P91",
+   "to": "P82",
+   "type": "supports",
+   "why": "Results of futures are rare, so parentheses are acceptable there."
+  },
+  {
+   "from": "P92",
+   "to": "P83",
+   "type": "attacks",
+   "why": "Useful precedence becomes ambiguous for nested Result/future types."
+  },
+  {
+   "from": "P93",
+   "to": "P92",
+   "type": "attacks",
+   "why": "Prefix await handles such types by awaiting then handling the Result."
+  },
+  {
+   "from": "P108",
+   "to": "P86",
+   "type": "supports",
+   "why": "Postfix avoids the prefix precedence dilemma."
+  },
+  {
+   "from": "P109",
+   "to": "P108",
+   "type": "supports",
+   "why": "await and ? are almost always paired."
+  },
+  {
+   "from": "P237",
+   "to": "P109",
+   "type": "supports",
+   "why": "Prefix puts await and ? on opposite sides."
+  },
+  {
+   "from": "P96",
+   "to": "P95",
+   "type": "attacks",
+   "why": "Prefix control-flow keywords are not a precedent for a value-yielding operator."
+  },
+  {
+   "from": "P97",
+   "to": "P95",
+   "type": "attacks",
+   "why": "await is analogous to postfix ?."
+  },
+  {
+   "from": "P98",
+   "to": "P95",
+   "type": "attacks",
+   "why": "await is unlike yield, so the prefix-yield analogy fails."
+  },
+  {
+   "from": "P99",
+   "to": "P102",
+   "type": "supports",
+   "why": "Prefix announces the await early."
+  },
+  {
+   "from": "P100",
+   "to": "P99",
+   "type": "attacks",
+   "why": "Postfix follows left-to-right data flow."
+  },
+  {
+   "from": "P101",
+   "to": "P100",
+   "type": "attacks",
+   "why": "Postfix reads unnaturally in English."
+  },
+  {
+   "from": "P104",
+   "to": "P100",
+   "type": "attacks",
+   "why": "Postfix forces backward jumps for readers."
+  },
+  {
+   "from": "P105",
+   "to": "P99",
+   "type": "attacks",
+   "why": "Prefix forces holding await in mind."
+  },
+  {
+   "from": "P102",
+   "to": "P132",
+   "type": "attacks",
+   "why": "Postfix await at line end is easily overlooked."
+  },
+  {
+   "from": "P103",
+   "to": "P102",
+   "type": "attacks",
+   "why": "Readers already scan line ends for ?."
+  },
+  {
+   "from": "P106",
+   "to": "P102",
+   "type": "attacks",
+   "why": "The hidden-control-flow objection did not materialize for ?."
+  },
+  {
+   "from": "P124",
+   "to": "P102",
+   "type": "attacks",
+   "why": ".await? stands out and rustfmt isolates it."
+  },
+  {
+   "from": "P114",
+   "to": "P102",
+   "type": "attacks",
+   "why": "Highlighting makes postfix await easy to spot."
+  },
+  {
+   "from": "P115",
+   "to": "P114",
+   "type": "attacks",
+   "why": "Code must be readable without highlighting."
+  },
+  {
+   "from": "P107",
+   "to": "P70",
+   "type": "supports",
+   "why": "try!() to ? improved Rust code."
+  },
+  {
+   "from": "P108",
+   "to": "P132",
+   "type": "supports",
+   "why": "Postfix gives clear order of await and ?."
+  },
+  {
+   "from": "P110",
+   "to": "P123",
+   "type": "attacks",
+   "why": ".await looks like field access."
+  },
+  {
+   "from": "P111",
+   "to": "P110",
+   "type": "supports",
+   "why": "Field syntax suggests a trivial operation."
+  },
+  {
+   "from": "P112",
+   "to": "P123",
+   "type": "attacks",
+   "why": "Dot forms disguise control flow as a member."
+  },
+  {
+   "from": "P112",
+   "to": "P163",
+   "type": "attacks",
+   "why": "Dot forms disguise control flow as a member."
+  },
+  {
+   "from": "P113",
+   "to": "P123",
+   "type": "attacks",
+   "why": "Magic fields are one-off syntax."
+  },
+  {
+   "from": "P116",
+   "to": "P110",
+   "type": "attacks",
+   "why": "Users quickly learn .await is not a field."
+  },
+  {
+   "from": "P117",
+   "to": "P123",
+   "type": "supports",
+   "why": "Dot-completion works with .await."
+  },
+  {
+   "from": "P118",
+   "to": "P117",
+   "type": "attacks",
+   "why": "Completion benefits are obtainable otherwise."
+  },
+  {
+   "from": "P119",
+   "to": "P123",
+   "type": "supports",
+   "why": ".await is simple to implement."
+  },
+  {
+   "from": "P121",
+   "to": "P123",
+   "type": "attacks",
+   "why": "Field syntax needs parentheses to call an awaited closure."
+  },
+  {
+   "from": "P122",
+   "to": "P121",
+   "type": "attacks",
+   "why": "The parenthesized case is rare and fixable."
+  },
+  {
+   "from": "P251",
+   "to": "P123",
+   "type": "attacks",
+   "why": "Postfix await with .unwrap() conflicts with rules."
+  },
+  {
+   "from": "P252",
+   "to": "P251",
+   "type": "attacks",
+   "why": "unwrap should mostly be replaced by ?."
+  },
+  {
+   "from": "P133",
+   "to": "P132",
+   "type": "attacks",
+   "why": "Space-separated await breaks visual grouping."
+  },
+  {
+   "from": "P134",
+   "to": "P133",
+   "type": "attacks",
+   "why": "rustfmt line-splitting makes it read clearly."
+  },
+  {
+   "from": "P135",
+   "to": "P134",
+   "type": "attacks",
+   "why": "It looks bad on one line and forced newlines are not good."
+  },
+  {
+   "from": "P136",
+   "to": "P132",
+   "type": "attacks",
+   "why": "A postfix keyword is un-Rust-like."
+  },
+  {
+   "from": "P137",
+   "to": "P70",
+   "type": "attacks",
+   "why": "Postfix await is unprecedented novelty."
+  },
+  {
+   "from": "P137",
+   "to": "P132",
+   "type": "attacks",
+   "why": "Postfix keyword is unprecedented."
+  },
+  {
+   "from": "P138",
+   "to": "P132",
+   "type": "attacks",
+   "why": "Chaining after foo await reads wrongly."
+  },
+  {
+   "from": "P139",
+   "to": "P132",
+   "type": "attacks",
+   "why": "Space-separated await is ambiguous in some constructs."
+  },
+  {
+   "from": "P141",
+   "to": "P132",
+   "type": "supports",
+   "why": "expr await is clearly a keyword."
+  },
+  {
+   "from": "P142",
+   "to": "P70",
+   "type": "attacks",
+   "why": "Postfix is awkward for streams."
+  },
+  {
+   "from": "P143",
+   "to": "P142",
+   "type": "attacks",
+   "why": "Stream syntax is a separate question."
+  },
+  {
+   "from": "P146",
+   "to": "P145",
+   "type": "attacks",
+   "why": "Experimentation would delay the feature."
+  },
+  {
+   "from": "P151",
+   "to": "P157",
+   "type": "supports",
+   "why": "The ! signals magic while chaining with ?."
+  },
+  {
+   "from": "P152",
+   "to": "P157",
+   "type": "supports",
+   "why": "General postfix macros would provide .await!()."
+  },
+  {
+   "from": "P153",
+   "to": "P152",
+   "type": "attacks",
+   "why": "Postfix macros need their own RFC."
+  },
+  {
+   "from": "P154",
+   "to": "P157",
+   "type": "attacks",
+   "why": "Postfix macros do not exist."
+  },
+  {
+   "from": "P155",
+   "to": "P152",
+   "type": "attacks",
+   "why": "Postfix macros would harm the language."
+  },
+  {
+   "from": "P156",
+   "to": "P157",
+   "type": "attacks",
+   "why": "await should not use postfix macros."
+  },
+  {
+   "from": "P158",
+   "to": "P154",
+   "type": "attacks",
+   "why": ".await!() can be special-cased first and generalized later."
+  },
+  {
+   "from": "P160",
+   "to": "P162",
+   "type": "attacks",
+   "why": ".await() misleadingly looks like an ordinary call."
+  },
+  {
+   "from": "P162",
+   "to": "P160",
+   "type": "attacks",
+   "why": "Await behaves like a blocking call from the caller's view."
+  },
+  {
+   "from": "P161",
+   "to": "P163",
+   "type": "attacks",
+   "why": "await cannot be an ordinary trait method."
+  },
+  {
+   "from": "P168",
+   "to": "P167",
+   "type": "attacks",
+   "why": "The postfix call form is confusing."
+  },
+  {
+   "from": "P169",
+   "to": "P179",
+   "type": "attacks",
+   "why": "Sigils are line noise."
+  },
+  {
+   "from": "P170",
+   "to": "P174",
+   "type": "attacks",
+   "why": "A sigil is too terse to spot."
+  },
+  {
+   "from": "P171",
+   "to": "P179",
+   "type": "attacks",
+   "why": "Syntax without the word await will feel alien."
+  },
+  {
+   "from": "P172",
+   "to": "P179",
+   "type": "attacks",
+   "why": "Sigils are hard to grep."
+  },
+  {
+   "from": "P173",
+   "to": "P174",
+   "type": "attacks",
+   "why": "Sigils spend the sigil budget."
+  },
+  {
+   "from": "P174",
+   "to": "P179",
+   "type": "supports",
+   "why": "A postfix sigil follows the ? precedent."
+  },
+  {
+   "from": "P175",
+   "to": "P174",
+   "type": "supports",
+   "why": "Unobtrusive syntax is a virtue."
+  },
+  {
+   "from": "P176",
+   "to": "P169",
+   "type": "attacks",
+   "why": "Sigil objections do not hold."
+  },
+  {
+   "from": "P176",
+   "to": "P172",
+   "type": "attacks",
+   "why": "The grep objection does not hold."
+  },
+  {
+   "from": "P176",
+   "to": "P173",
+   "type": "attacks",
+   "why": "The arbitrariness and budget objections do not hold."
+  },
+  {
+   "from": "P180",
+   "to": "P179",
+   "type": "attacks",
+   "why": "@ is a poor sigil."
+  },
+  {
+   "from": "P182",
+   "to": "P181",
+   "type": "attacks",
+   "why": "~ is hard to type."
+  },
+  {
+   "from": "P184",
+   "to": "P183",
+   "type": "attacks",
+   "why": "... is too close to range syntax."
+  },
+  {
+   "from": "P186",
+   "to": "P185",
+   "type": "attacks",
+   "why": "# resembles raw strings."
+  },
+  {
+   "from": "P188",
+   "to": "P187",
+   "type": "attacks",
+   "why": "-> already has a meaning."
+  },
+  {
+   "from": "P190",
+   "to": "P189",
+   "type": "attacks",
+   "why": "! conflicts with macro syntax."
+  },
+  {
+   "from": "P193",
+   "to": "P192",
+   "type": "attacks",
+   "why": "The word await is redundant after @."
+  },
+  {
+   "from": "P195",
+   "to": "P194",
+   "type": "attacks",
+   "why": "<-- is too subtle and clashes with tokens."
+  },
+  {
+   "from": "P256",
+   "to": "P174",
+   "type": "supports",
+   "why": "People later prefer terse forms."
+  },
+  {
+   "from": "P280",
+   "to": "P179",
+   "type": "attacks",
+   "why": "Sigil confidence is not backed by use."
+  },
+  {
+   "from": "P197",
+   "to": "P196",
+   "type": "attacks",
+   "why": "Mandatory delimiters are noisy and chain badly."
+  },
+  {
+   "from": "P198",
+   "to": "P196",
+   "type": "attacks",
+   "why": "Delimiters are inconsistent with control-flow keywords."
+  },
+  {
+   "from": "P199",
+   "to": "P198",
+   "type": "attacks",
+   "why": "A keyword with different syntax is not a problem."
+  },
+  {
+   "from": "P200",
+   "to": "P196",
+   "type": "attacks",
+   "why": "await {} falsely suggests the whole block is awaited."
+  },
+  {
+   "from": "P201",
+   "to": "P200",
+   "type": "attacks",
+   "why": "await {} awaits only the final expression."
+  },
+  {
+   "from": "P203",
+   "to": "P202",
+   "type": "attacks",
+   "why": "Required-paren await is unprecedented."
+  },
+  {
+   "from": "P234",
+   "to": "P196",
+   "type": "attacks",
+   "why": "Delimited prefix await is parenthesis-heavy in chains."
+  },
+  {
+   "from": "P211",
+   "to": "P206",
+   "type": "attacks",
+   "why": "There should be one way to await."
+  },
+  {
+   "from": "P212",
+   "to": "P211",
+   "type": "attacks",
+   "why": "Multiple forms are inevitable via user macros."
+  },
+  {
+   "from": "P131",
+   "to": "P211",
+   "type": "attacks",
+   "why": "Users can invert any syntax with macros."
+  },
+  {
+   "from": "P262",
+   "to": "P211",
+   "type": "supports",
+   "why": "Language complexity should stay low."
+  },
+  {
+   "from": "P213",
+   "to": "P208",
+   "type": "attacks",
+   "why": "Building .await!() on prefix only moves the magic."
+  },
+  {
+   "from": "P215",
+   "to": "P214",
+   "type": "attacks",
+   "why": "Switching later is unrealistic."
+  },
+  {
+   "from": "P215",
+   "to": "P1",
+   "type": "attacks",
+   "why": "Transitions are hard and costly."
+  },
+  {
+   "from": "P216",
+   "to": "P215",
+   "type": "attacks",
+   "why": "An edition could change it."
+  },
+  {
+   "from": "P217",
+   "to": "P214",
+   "type": "attacks",
+   "why": "Only postfix migrates automatically from await!()."
+  },
+  {
+   "from": "P219",
+   "to": "P218",
+   "type": "attacks",
+   "why": "Deferred prefix is hard to parse visually."
+  },
+  {
+   "from": "P221",
+   "to": "P220",
+   "type": "attacks",
+   "why": "Extended dot syntax is unclear."
+  },
+  {
+   "from": "P223",
+   "to": "P222",
+   "type": "attacks",
+   "why": "Binding await loses composability."
+  },
+  {
+   "from": "P225",
+   "to": "P224",
+   "type": "attacks",
+   "why": "await fn breaks established meaning."
+  },
+  {
+   "from": "P227",
+   "to": "P226",
+   "type": "attacks",
+   "why": "become is needed for tail calls."
+  },
+  {
+   "from": "P229",
+   "to": "P228",
+   "type": "attacks",
+   "why": "yield cannot replace await."
+  },
+  {
+   "from": "P231",
+   "to": "P230",
+   "type": "attacks",
+   "why": "Reusing ? for await fails."
+  },
+  {
+   "from": "P233",
+   "to": "P232",
+   "type": "attacks",
+   "why": "Yield is not chained."
+  },
+  {
+   "from": "P148",
+   "to": "P147",
+   "type": "attacks",
+   "why": "Await need not match ascription."
+  },
+  {
+   "from": "P150",
+   "to": "P149",
+   "type": "attacks",
+   "why": "Ascription-style await may conflict."
+  },
+  {
+   "from": "P236",
+   "to": "P243",
+   "type": "attacks",
+   "why": "Prefix await breaks a common refactoring."
+  },
+  {
+   "from": "P245",
+   "to": "P70",
+   "type": "supports",
+   "why": "Prefix operators trip intuition."
+  },
+  {
+   "from": "P248",
+   "to": "P246",
+   "type": "attacks",
+   "why": "Postfix is disliked by most."
+  }
+ ],
+ "cruxes": [
+  {
+   "question": "How common and valuable is chaining after await in real Rust code?",
+   "sides": [
+    {
+     "answer": "Common and idiomatic; await must chain",
+     "points": [
+      "P70",
+      "P62",
+      "P74",
+      "P63",
+      "P71",
+      "P128",
+      "P129",
+      "P234",
+      "P75",
+      "P61",
+      "P60"
+     ]
+    },
+    {
+     "answer": "Rare or harmful; let bindings suffice",
+     "points": [
+      "P65",
+      "P64",
+      "P66",
+      "P57",
+      "P67",
+      "P76",
+      "P126",
+      "P73",
+      "P235",
+      "P238"
+     ]
+    }
+   ],
+   "why_decisive": "Nearly every argument for postfix forms rests on chaining, and most defenses of prefix rest on its rarity; settling it decides prefix vs postfix.",
+   "settles_by": "Corpus statistics and side-by-side rewrites of real async Rust code, with care for metric choice and evolving idioms."
+  },
+  {
+   "question": "Should await points be highly visible, or unobtrusive so async code reads like sync code?",
+   "sides": [
+    {
+     "answer": "Highly visible",
+     "points": [
+      "P45",
+      "P102",
+      "P170",
+      "P25",
+      "P115",
+      "P42",
+      "P104"
+     ]
+    },
+    {
+     "answer": "Unobtrusive or ordinary visibility is enough",
+     "points": [
+      "P46",
+      "P175",
+      "P103",
+      "P114",
+      "P124",
+      "P41",
+      "P106"
+     ]
+    }
+   ],
+   "why_decisive": "It determines whether sigils, end-of-line postfix forms and implicit await are acceptable at all.",
+   "settles_by": "Evidence on how often hidden suspension points cause bugs (borrows, RefCell across awaits) and reading studies of skimmability."
+  },
+  {
+   "question": "How much weight should familiarity with other languages' prefix await carry for Rust?",
+   "sides": [
+    {
+     "answer": "Substantial; familiar prefix should win if close",
+     "points": [
+      "P55",
+      "P56",
+      "P59",
+      "P51",
+      "P58",
+      "P240",
+      "P137",
+      "P95"
+     ]
+    },
+    {
+     "answer": "Little; Rust's semantics and ? make the precedent weak",
+     "points": [
+      "P50",
+      "P53",
+      "P54",
+      "P62",
+      "P242",
+      "P96",
+      "P97"
+     ]
+    }
+   ],
+   "why_decisive": "Familiarity is the main positive case for prefix await; if discounted, Rust-specific ergonomics dominate.",
+   "settles_by": "A judgment on onboarding value, plus evidence whether C#/JS experience transfers given Rust's ?, laziness and chaining."
+  },
+  {
+   "question": "Can prefix await be given an acceptable interaction with the ? operator?",
+   "sides": [
+    {
+     "answer": "Yes, via precedence choice, await? sugar or delimiters",
+     "points": [
+      "P83",
+      "P84",
+      "P87",
+      "P82",
+      "P196",
+      "P91",
+      "P93"
+     ]
+    },
+    {
+     "answer": "No; any prefix rule confuses, postfix gives clear order",
+     "points": [
+      "P85",
+      "P86",
+      "P88",
+      "P92",
+      "P108",
+      "P109",
+      "P237",
+      "P197"
+     ]
+    }
+   ],
+   "why_decisive": "The prefix family survives only if one of its precedence variants is workable with ?.",
+   "settles_by": "User studies of how readers parse `await x?`, and counts of Result-of-future vs future-of-Result cases."
+  },
+  {
+   "question": "Is it acceptable for await to look like an existing construct (field, method or macro) despite being control flow?",
+   "sides": [
+    {
+     "answer": "Acceptable; users learn it and it gains tooling and simplicity",
+     "points": [
+      "P116",
+      "P162",
+      "P163",
+      "P12",
+      "P157",
+      "P123",
+      "P117",
+      "P119"
+     ]
+    },
+    {
+     "answer": "Misleading; control flow should not be disguised",
+     "points": [
+      "P110",
+      "P112",
+      "P160",
+      "P13",
+      "P161",
+      "P113",
+      "P111"
+     ]
+    }
+   ],
+   "why_decisive": "Decides among the leading concrete postfix candidates (.await, .await(), .await!()) and the await!() macro.",
+   "settles_by": "Learnability testing with newcomers and a design judgment on whether syntax should mirror semantics."
+  },
+  {
+   "question": "Should Rust stabilize an interim syntax now and settle the final form later, or decide the final form now?",
+   "sides": [
+    {
+     "answer": "Ship now (macro or prefix) and revise with usage",
+     "points": [
+      "P1",
+      "P2",
+      "P214",
+      "P145",
+      "P216",
+      "P18",
+      "P17"
+     ]
+    },
+    {
+     "answer": "Decide now; later changes are debt and churn",
+     "points": [
+      "P3",
+      "P4",
+      "P215",
+      "P19",
+      "P153",
+      "P146",
+      "P6"
+     ]
+    }
+   ],
+   "why_decisive": "If deferral is viable, most syntax disputes can be postponed to real-usage data.",
+   "settles_by": "Assessment of migration cost (editions, rustfix) and of the cost of further delay."
+  },
+  {
+   "question": "Should there be one await form or both a prefix and a postfix form?",
+   "sides": [
+    {
+     "answer": "Both, chosen per situation",
+     "points": [
+      "P206",
+      "P207",
+      "P208",
+      "P210",
+      "P212",
+      "P131"
+     ]
+    },
+    {
+     "answer": "One obvious way",
+     "points": [
+      "P211",
+      "P262",
+      "P213"
+     ]
+    }
+   ],
+   "why_decisive": "Offering both would defuse the prefix/postfix split rather than resolve it.",
+   "settles_by": "A judgment on complexity budget and evidence from languages with dual forms."
+  },
+  {
+   "question": "Should await be explicit at all, or implicit/statement-level?",
+   "sides": [
+    {
+     "answer": "Implicit or partially implicit",
+     "points": [
+      "P37",
+      "P38",
+      "P43",
+      "P41",
+      "P40"
+     ]
+    },
+    {
+     "answer": "Explicit await",
+     "points": [
+      "P25",
+      "P26",
+      "P36",
+      "P44",
+      "P27",
+      "P28"
+     ]
+    }
+   ],
+   "why_decisive": "Implicit await would make the whole explicit-syntax debate moot.",
+   "settles_by": "Whether lazy futures can coexist with implicit await, and experience from Kotlin vs C#."
+  }
+ ]
+}

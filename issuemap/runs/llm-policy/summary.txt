@@ -1,0 +1,57 @@
+# Summary: rust-lang/rust-forge PR #1040, the LLM usage policy for `rust-lang/rust`
+
+## What was proposed
+
+jyn514 proposed a Forge policy on LLM use in contributions to `rust-lang/rust` only. Subtrees, other repos and crates.io dependencies are out of scope. The draft:
+
+- **By default, bans using LLMs to *create* code, docs or PR/issue text.** Some uses are allowed, such as review assistance, lookup, and clearly quoted and marked LLM output.
+- **Creates an "experimental" track** for LLM-authored code. The contributor has to line up a willing reviewer ahead of time, and soundness-critical code is excluded.
+- **Puts four topics off limits in the thread:** ethics, environment, copyright, and moral judgements about people who use LLMs. The authors said Zulip had already argued these out over 3000+ messages without consensus.
+
+The stated reasons were the flood of low-effort "slop" PRs, the need for a rule moderators can apply consistently, and the failure of a month-plus attempt at a project-wide policy. The drawback it accepts openly is that it bans some valid uses on purpose, to keep the rule easy to moderate.
+
+Later changes, made to satisfy joshtriplett:
+
+- A **"circuit breaker"**: if LLM PRs pass half of merged PRs, they pause for up to 10 days so people have to discuss the policy.
+- A statement that LLMs must never become a *requirement* for contributing.
+- A rule against LLMs attending meetings. tmandry objected that this was out of scope, and it was reverted.
+
+## Main positions and arguments
+
+**For the policy, as a compromise.** Voices included jyn514, Kobzol, clarfonthey, nnethercote, joshtriplett and the moderators.
+- Any guidance is better than the current confusion. Even clarfonthey, who wants the most restriction, supports it on these grounds.
+- It is deliberately balanced, so it can't fairly be read as "Rust is pro-AI" or "anti-AI".
+- The teams that review `rust-lang/rust` have the authority to set its rules.
+- "Politics is the art of the possible": the project decides by consensus and its members hold a wide range of views.
+
+**Too restrictive or framed wrong.** Voices included nikomatsakis, Diggsey, tmandry, traviscross and Darksonn.
+- Diggsey: judge PRs on quality and on how much autonomy the AI had, not on whether AI "created" them. A fixed ban invites fairness fights.
+- Darksonn: banning code generation, the main use case, *is* an anti-AI position.
+- nikomatsakis: the policy shows low trust in reviewers through complex rule lists, and sets a precedent he thought was worse than having no policy. He drafted a simpler alternative.
+- tmandry, on the circuit breaker: it is an "aesthetic limit" that labels LLM users second-class. It also makes it risky for companies, whose engineers often have to use AI tools, to fund upstream Rust work, so they would keep patches in their own forks instead. traviscross backed him.
+
+**Too permissive.** These were mostly outside commenters, plus workingjubilee.
+- Any LLM-generated code threatens a compiler people choose for its reliability.
+- Ruling ethics out of scope fakes a consensus.
+- Companies' AI mandates shouldn't shape project policy. clarfonthey called those mandates coercive. traviscross pushed back that this was not abuse, and clarfonthey's comment was later deleted and replaced.
+- jyn514's answer: the reviewers who approved this are the same people who keep the compiler reliable, and she works on certified safety-critical rustc builds herself.
+
+**Process objections.**
+- nikomatsakis first argued that this effectively sets project-wide AI policy, so the Leadership Council should decide it. jyn514 and Kobzol pushed back hard. They called it the familiar pattern of blocking a narrow policy by widening it to the whole project. Niko withdrew the objection, while still saying it wasn't the wisest route.
+- Manishearth and Niko both said 40-checkbox multi-team FCPs (final comment periods, the project's formal sign-off step) don't work well.
+- BoxyUwU asked for extra time after the late changes. She also briefly blocked on the proposed LLM committee (leadership-council#308), then resolved both concerns.
+
+## Cruxes
+
+1. **Is the "experiment" really an experiment, or the permanent policy in practice?**
+   - joshtriplett: an experiment needs bounds, and the circuit breaker brings people back to the table.
+   - traviscross and tmandry: once any member of a big group can block changes, "experimental" provisions become permanent, so each one has to be acceptable as a lasting rule.
+   - Resolving this would settle the circuit-breaker dispute and most of the time-limit concerns (jackh726's concern was resolved without a time limit).
+2. **Can the policy be amended in practice?** How hard it is to change decides whether flawed parts can be accepted now and fixed later. jyn514 and Boxy expected a path to amend it, possibly the LLM committee. Critics doubted one exists.
+3. **What decides acceptance: who wrote it (an LLM or not) or how good it is?** Diggsey and Niko favor judging quality and reviewer trust. The authors favor a clear rule that is easy to moderate and doesn't reopen every case.
+4. **Do ethical concerns belong in the policy at all?** The authors judged that people with ethical objections would accept nothing short of a full ban, which has no consensus, so they scoped ethics out. Outside critics reject that move entirely. This divide was never bridged, only declared out of scope.
+5. **How much should corporate contributors' tooling count?** The question is whether losing funded contributors (tmandry) outweighs keeping the project different from corporate norms and not pushing out non-LLM contributors (workingjubilee, clarfonthey, joshtriplett).
+
+## Outcome
+
+All rfcbot concerns were resolved, covering security reports, draft-PR disclosure, time limits, wait time, informal feedback and the committee. Each team passed its threshold of all approvals but two (26 approvals in total). The FCP ran, and jyn514 merged the policy around August 5, 2026, then locked the thread. The circuit breaker stayed in, and some people were still unhappy with it.

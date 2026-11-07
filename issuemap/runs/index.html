@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>issuemap: first test results</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1c1a;--mut:#6b675f;--line:#e4e0d8;--acc:#9a4b16;--card:#fff;--win:#2f6b3a}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--fg:#ece9e2;--mut:#9d978b;--line:#2f2c27;--acc:#e09a62;--card:#1e1d1a;--win:#7fc08a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 ui-serif,Georgia,serif}
+main{max-width:760px;margin:0 auto;padding:30px 18px 70px}
+h1{font-size:1.75rem;line-height:1.2;margin:0 0 8px}
+h2{font:600 13px ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:34px 0 10px}
+.lead{font-size:1.08rem}.meta{color:var(--mut);font:13px/1.5 ui-sans-serif,system-ui,sans-serif}
+.maps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+a.map{display:block;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:14px 16px;background:var(--card);color:inherit;text-decoration:none}
+a.map b{display:block;font-size:1.05rem;margin-bottom:4px}a.map span{font:13px ui-sans-serif,system-ui,sans-serif;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font:14px/1.4 ui-sans-serif,system-ui,sans-serif;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600}td.win{color:var(--win);font-weight:700}
+ul{padding-left:20px}li{margin:6px 0}a{color:var(--acc)}
+</style></head><body><main>
+<h1>Does a crux map beat a plain AI summary?</h1>
+<p class="lead">On its cruxes, yes, in both tests: the map named nearly twice as many of the decision-makers' own key considerations. Read as a whole, it was only a little ahead, and the grader still found the plain summary quicker to read.</p>
+<p class="meta">Run 7 Nov 2026 &middot; tool: issuemap 0.1 &middot; scribe and baseline both run by Claude agents &middot; grading blind, by a separate agent</p>
+
+<h2>The maps</h2>
+<div class="maps">
+<a class="map" href="await.html"><b>Rust <code>await</code> syntax (2018–19)</b><span>815 comments &middot; 128 people &middot; 1,294 claims &middot; 280 points &middot; 8 cruxes</span></a>
+<a class="map" href="llm-policy.html"><b>Rust LLM-use policy (2026)</b><span>115 comments &middot; 32 people &middot; 177 claims &middot; 108 points &middot; 7 cruxes</span></a>
+</div>
+<p class="meta">Every claim carries an exact quote and a link to its comment. All 1,471 quotes were found word for word in their source comments.</p>
+
+<h2>Scorecard</h2>
+<table>
+<thead><tr><th>Coverage of the answer key</th><th>Map</th><th>Plain AI</th></tr></thead>
+<tbody>
+<tr><td>Await: key cruxes, from the Cruxes section</td><td class="win">20 / 32</td><td>12 / 32</td></tr>
+<tr><td>Await: key cruxes, anywhere in the output</td><td class="win">27 / 32</td><td>23 / 32</td></tr>
+<tr><td>Await: decisive considerations, Cruxes section</td><td class="win">14 / 22</td><td>8 / 22</td></tr>
+<tr><td>Await: decisive considerations, anywhere</td><td class="win">20 / 22</td><td>16 / 22</td></tr>
+<tr><td>LLM policy: key cruxes, from the Cruxes section</td><td class="win">10 / 22</td><td>5 / 22</td></tr>
+<tr><td>LLM policy: key cruxes, anywhere in the output</td><td class="win">11 / 22</td><td>10 / 22</td></tr>
+<tr><td>Length of the output</td><td>3,600–7,300 words</td><td class="win">1,000 words</td></tr>
+</tbody></table>
+<p class="meta">Each key crux was scored 2 if clearly identified, 1 if partly, 0 if missing. Neither output had clear factual errors. The grader didn't know which output was which.</p>
+
+<h2>How it was run</h2>
+<ul>
+<li><b>Fetch.</b> A GitHub Actions workflow pulled every comment through the GitHub API.</li>
+<li><b>Freeze.</b> Seven summary comments were removed from the await thread, including the team's own summary, because they are the answer key. The rest was locked with a SHA-256 hash.</li>
+<li><b>Seal.</b> A separate agent pulled the crux list from what the decision-makers wrote before any mapping began: the lang team's write-up and Boats' decision posts for await, and the Inside Rust announcement for the LLM policy.</li>
+<li><b>Map.</b> Scribe agents read the thread in batches and pulled out claims, each with an exact quote. A script checked every quote. Claims were then merged into points, linked, and the cruxes named.</li>
+<li><b>Rival.</b> Another agent read the same frozen thread and wrote a plain summary with its own crux list.</li>
+<li><b>Grade.</b> A third agent scored both outputs against the sealed key, with the labels hidden.</li>
+</ul>
+
+<h2>What to keep in mind</h2>
+<ul>
+<li><b>The map is better at naming cruxes than at being read.</b> The grader judged the 1,000-word summary the quicker way to see where the disagreement lay. The map's long point lists are complete but hard to scan.</li>
+<li><b>Leakage is only partly controlled.</b> The await debate is famous, so the model may know it already. The LLM-policy debate was decided after the model's training cutoff, but much of the arguing happened before it.</li>
+<li><b>The answer keys are imperfect.</b> Only part of the await write-up survives in an archive, since the rest needed JavaScript. The LLM-policy key is a blog post explaining the policy, not a summary of the thread, which is why both outputs score low there.</li>
+<li><b>Small sample.</b> Two debates and one grader. The result points in a direction; it doesn't prove anything.</li>
+<li><b>One of the map's eight await cruxes, implicit await, was judged doubtful.</b> It was a fringe idea that the moderators had ruled out of scope.</li>
+</ul>
+
+<h2>Next</h2>
+<p>Put a short, ranked summary at the top of each map so it reads as fast as the plain one, then rerun both tests. The tool, its tests and the fetched data are on the <a href="https://github.com/jstop/argument-graph-pilot/tree/issuemap-data/issuemap">issuemap-data branch</a>.</p>
+</main></body></html>
