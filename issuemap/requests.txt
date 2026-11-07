@@ -2,3 +2,5 @@
 # every comment into issuemap/data/ as JSON.
 https://github.com/rust-lang/rust/issues/57640
 https://github.com/rust-lang/rust/issues/50547
+https://github.com/rust-lang/rust-forge/pull/1040
+https://github.com/nodejs/node/pull/62105
